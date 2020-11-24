@@ -29,7 +29,7 @@ STT = LiveSpeech(
 	hmm= os.path.join(model_path, 'es-es'),
 	#lm= os.path.join(model_path, 'es-20k.lm.bin'),
 	kws=os.path.join(os.path.dirname(__file__),'kws.list'), #os.path.join(model_path, 'kws.list'),
-	dict=os.path.join(os.path.dirname(__file__), 'test.dict') #os.path.join(model_path, 'es.dict')
+	dict=os.path.join(os.path.dirname(__file__), 'kws.dict') #os.path.join(model_path, 'es.dict')
 )
 
 ## Definimos el modulo controlador de los LED
