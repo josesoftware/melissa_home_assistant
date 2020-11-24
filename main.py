@@ -10,7 +10,7 @@ library_path = "/var/www/html/"
 import os
 import threading
 from pocketsphinx import LiveSpeech, get_model_path
-from modules.led_module import Pixels
+# from modules.led_module import Pixels
 from modules.speak_module import *
 from modules.device_module import *
 
@@ -33,7 +33,7 @@ STT = LiveSpeech(
 )
 
 ## Definimos el modulo controlador de los LED
-LED_Module = Pixels()
+LED_Module = None # Pixels()
 
 ## Definimos el Text To Speech
 TTS = Speak_Module("Female", LED_Module)

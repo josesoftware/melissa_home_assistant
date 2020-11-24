@@ -35,36 +35,37 @@ class Speak_Module:
 
 	## Método que devuelve un mensaje de audio para indicar que se ha realizado correctamente una opción
 	def SayDoneMessage(self):
-
 		## Calculamos un indice al azar de mensaje
 		message_index = random.randint(0, len(self.CommonMessages["done_messages"]) - 1)
 
 		## Leds en modo habla
-		self.LED_Module.speak()
-		print(os.path.dirname(__file__))
+		if self.LED_Module is not None:
+			self.LED_Module.speak()
+
 		## Lanzamos el TTS con un mensaje de confirmación correcta seleccionado al azar
-		#self.assertTrue(festival.sayText(self.CommonMessages["done_messages"][message_index]))
-		#stream = os.popen('../speak.sh %s' % self.CommonMessages["done_messages"][message_index])
-		#subprocess.run([library_path + 'speak.sh',"'" + self.CommonMessages["done_messages"][message_index] + "'"])
 		process = subprocess.Popen((os.path.dirname(__file__)+'/../../speak.sh "%s"' % self.CommonMessages["done_messages"][message_index]), shell=True, stdout=subprocess.PIPE)
+		
+		## Esperamos a que termine
 		process.wait()
 
-		## Leds en modo habla
-		self.LED_Module.listen()
+		## Leds en modo escucha
+		if self.LED_Module is not None:
+			self.LED_Module.listen()
 
 	## Método que devuelve un mensaje de audio para indicar que se ha realizado correctamente una opción
 	def SayMessage(self, message):
 		## Leds en modo habla
-		self.LED_Module.speak()
+		if self.LED_Module is not None:
+			self.LED_Module.speak()
 
-		## Lanzamos el TTS con un mensaje de confirmación correcta seleccionado al azar
-		#self.assertTrue(festival.sayText(self.CommonMessages["done_messages"][message_index]))
-		#stream = os.popen('../speak.sh "%s"' % message)
+		## Lanzamos el TTS con el mensaje pasado por parametro
 		process = subprocess.Popen((os.path.dirname(__file__)+'/../../speak.sh "%s"' % message), shell=True, stdout=subprocess.PIPE)
+		
+		## Esperamos a que termine
 		process.wait()
-		#subprocess.run([library_path + 'speak.sh',"'" + self.CommonMessages["done_messages"][message_index] + "'"])
 
-		## Leds en modo habla
-		self.LED_Module.listen()
+		## Leds en modo escucha
+		if self.LED_Module is not None:
+			self.LED_Module.listen()
 
 		return False
