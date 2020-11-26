@@ -88,7 +88,7 @@ for phrase in STT:
 			LED_Module.SetRingColorRGB(0, 0, 255)
 
 		## Mensaje de aviso por audio
-		TTS.SayDoneMessage(LED_Module)
+		TTS.SayDoneMessage()
 
 		## Mensaje de aviso por texto
 		print("Done!")
