@@ -1,5 +1,5 @@
 #######################################################################
-## Este módulo se encarga de la comunicacion con dispositivos de IoT ##
+## Objeto que representa un dispositivo de IoT						 ##
 #######################################################################
 
 ## Importamos modulos necesarios
@@ -19,18 +19,6 @@ class IoTDevice:
 		## Fijamos la direccion IP
 		self.Address = ipaddress.ip_address(address)
 		## Fijamos la direccion MAC
-		self.Address = ipaddress.ip_address(address)
+		self.MACAddress = mac
 		## Fijamos el alias
-		self.Address = ipaddress.ip_address(address)
-
-	## Método que enviará al dispositivo la orden de encenderse
-	def TurnON(self):
-
-		## Enviamos una peticion GET
-		return requests.get('http://%s/?relay=on' % self.Address)
-
-	## Método que enviara al dispositivo la orden de apagarse
-	def TurnOFF(self):
-
-        ## Enviamos una peticion GET
-        return requests.get('http://%s/?relay=off' % self.Address)
+		self.Alias = alias
