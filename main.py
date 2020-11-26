@@ -60,7 +60,7 @@ for phrase in STT:
 
 	# Recuperamos
 	liveText = phrase.hypothesis()
-
+	print(liveText)
 
 	# Si la palabra no es melisa y no esta levantado pasamos de ciclo
 	if 'melissa' not in liveText and wakeMode == False:
@@ -72,7 +72,8 @@ for phrase in STT:
 		wakeMode = True
 
 		## Fijamos el color a los led
-		LED_Module.wakeup()
+		if LED_Module is not None:
+			LED_Module.wakeup()
 
 		## Mensaje de aviso
 		print("Melissa is wake up")
@@ -83,10 +84,11 @@ for phrase in STT:
 	# TEST
 	if 'luz' in liveText and 'azul' in liveText:
 		## Fijamos el color a los led
-		LED_Module.SetRingColorRGB(0, 0, 255)
+		if LED_Module is not None:
+			LED_Module.SetRingColorRGB(0, 0, 255)
 
 		## Mensaje de aviso por audio
-		# TTS.SayDoneMessage(LED_Module)
+		TTS.SayDoneMessage(LED_Module)
 
 		## Mensaje de aviso por texto
 		print("Done!")
@@ -97,7 +99,8 @@ for phrase in STT:
 	# TEST 2
 	if 'descansa' in liveText:
 		## Fijamos el color a los led
-		LED_Module.off()
+		if LED_Module is not None:
+			LED_Module.off()
 
 		## Mensaje de aviso
 		print("Bye bye")
@@ -108,7 +111,8 @@ for phrase in STT:
 	# TEST 3
 	if 'enciende' in liveText and 'rele' in liveText:
 		## Fijamos el color a los led
-		LED_Module.think()
+		if LED_Module is not None:
+			LED_Module.think()
 
 		## Creamos un objeto temporal
 		obj = IoTDevice('10.0.10.218')
@@ -127,7 +131,8 @@ for phrase in STT:
 	# TEST 4
 	if 'apaga' in liveText and 'rele' in liveText:
 		## Fijamos el color a los led
-		LED_Module.think()
+		if LED_Module is not None:
+			LED_Module.think()
 
 		## Creamos un objeto temporal
 		obj = IoTDevice('10.0.10.218')
@@ -146,7 +151,8 @@ for phrase in STT:
 	# TEST 5
 	if 'que' in liveText and 'eres' in liveText:
 		## Fijamos el color a los led
-		#LED_Module.think()
+		if LED_Module is not None:
+			LED_Module.think()
 
 		## Mensaje de aviso por audio
 		# TTS.SayMessage("Aún no soy nada, en el futuro pretenden que sea un asistente de hogar y estaré encantada de ayudarte en tu vida diaria")

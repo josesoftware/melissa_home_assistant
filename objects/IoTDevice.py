@@ -15,8 +15,12 @@ class IoTDevice:
 	Alias = 'Default'
 
 	## Constructor
-	def __init__(self, address):
+	def __init__(self, address, mac, alias):
 		## Fijamos la direccion IP
+		self.Address = ipaddress.ip_address(address)
+		## Fijamos la direccion MAC
+		self.Address = ipaddress.ip_address(address)
+		## Fijamos el alias
 		self.Address = ipaddress.ip_address(address)
 
 	## Método que enviará al dispositivo la orden de encenderse
