@@ -10,9 +10,9 @@ import ipaddress
 class IoTDevice:
 
 	## Atributos
-    IPAddress = ipaddress.ip_address('255.255.255.255')
-    MACAddress = 'FF:FF:FF:FF:FF'
-    Alias = 'Default'
+	IPAddress = ipaddress.ip_address('255.255.255.255')
+	MACAddress = 'FF:FF:FF:FF:FF'
+	Alias = 'Default'
 
 	## Constructor
 	def __init__(self, address):
@@ -28,5 +28,5 @@ class IoTDevice:
 	## Método que enviara al dispositivo la orden de apagarse
 	def TurnOFF(self):
 
-		## Enviamos una peticion GET
-		return requests.get('http://%s/?relay=off' % self.Address)
+        ## Enviamos una peticion GET
+        return requests.get('http://%s/?relay=off' % self.Address)
