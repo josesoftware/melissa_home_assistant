@@ -3,7 +3,6 @@
 #######################################################################
 
 ## Importamos modulos necesarios
-import requests
 import ipaddress
 
 ## Clase que representa el módulo

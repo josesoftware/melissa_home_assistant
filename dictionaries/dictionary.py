@@ -1,7 +1,14 @@
 ##################################################
-## Librertia de constantes de utilidad			##
+## Diccionario de colores disponibles			##
 ##################################################
 
+## Diccionario de lenguajes
+LANGUAGE_DICTIONARY = {
+	"EN-US": { "tts_code": "english", "stt_model": "en-us", "keywords_file": "en-us_keywords"},
+	"ES-ES": { "tts_code": "spanish", "stt_model": "es-es", "keywords_file": "es-es_keywords"}
+}
+
+## Diccionario de colores
 COLOR_DICTIONARY = {
 	"PURPLE": "#800080",
 	"FUCHSIA": "#FF00FF",
@@ -18,7 +25,7 @@ COLOR_DICTIONARY = {
 	"SALMON": "#FA8072",
 	"ORANGE": "#FF8000",
 	"PINK": "#FF0083",
-	"CRIMSON": "#DC143C"
+	"CRIMSON": "#DC143C",
 	"RED": "#FF0000",
 	"MAROON": "#800000",
 	"BLACK": "#000000",
