@@ -28,8 +28,8 @@ app_language =  LANGUAGES["ES-ES"]
 ## Config del STT
 stt_samprate = 96000
 stt_buffer = 1024
-stt_kws_path = os.path.join(os.path.dirname(__file__), '/modules/stt_module/', app_language["keywords_file"], '.list')
-stt_dict_path = os.path.join(os.path.dirname(__file__), '/modules/stt_module/', app_language["keywords_file"], '.dict')
+stt_kws_path = os.path.join(os.path.dirname(__file__), '/modules/stt_module/', app_language["keywords_file"] + '.list')
+stt_dict_path = os.path.join(os.path.dirname(__file__), '/modules/stt_module/', app_language["keywords_file"] + '.dict')
 stt_hmm_path = os.path.join(get_model_path(), app_language["stt_model"])
 ############################################
 
