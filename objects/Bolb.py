@@ -4,7 +4,7 @@
 
 ## Importamos modulos necesarios
 import requests
-from ..libraries.lib_math import IntClamp as Clamp
+from libraries.lib_math import IntClamp as Clamp
 from Device import IoTDevice as Parent
 
 ## Clase que representa el módulo
@@ -13,33 +13,36 @@ class Bolb(Parent):
 	Color = '#000000'
 	Intensity = 100
 
+	## Definimos acciones disponibles
+	Actions = { }
+
 	## Constructor
 	def __init__(self, address, mac, alias):
-		# Constructor del objeto padre 
-		Parent.__init__(self, address, mac, alias) 
+		## Constructor del objeto padre 
+		Parent.__init__(self, address, mac, alias)
+
+		## Inicializamos acciones disponibles
+		self.InitActions()
   
-	## Método que enviará al dispositivo la orden de encenderse
-	def TurnON(self):
-		## Enviamos una peticion GET
-		return requests.get('http://%s/?light=on' % self.Address)
+	## Inicializamos Actions con variables reales
+	def InitActions(self):
+		## Acciones disponibles
+		self.Actions = {
+			"turn on": { "url": "http://{address}/?light=on", "params": { "address": self.Address } },
+			"turn off": { "url": "http://{address}/?light=off", "params": { "address": self.Address } },
+			"color set": { "url": "http://{address}/?color={color}", "params": { "address": self.Address, "color": self.Color } },
+			"intensity set": { "url": "http://{address}/?intensity={intensity}", "params": { "address": self.Address, "intensity": self.Intensity } }
+		}
 
-	## Método que enviara al dispositivo la orden de apagarse
-	def TurnOFF(self):
-		## Enviamos una peticion GET
-		return requests.get('http://%s/?light=off' % self.Address)
+	## Método que traduce un Intent en un request al dispositivo
+	def DoIntent(self, intent):
+		## Inicializamos el request basandonos en el action
+		IntentRequest = self.Actions[intent.Action]
 
-	## Método que enviara al dispositivo la orden de cambiar a un color especifico
-	def SetColor(self, color):
-		## Fijamos el nuevo color
-		self.Color = color
-
-		## Enviamos una peticion GET
-		return requests.get('http://{0}/?color={1}{2}'.format(self.Address, self.Color, format(int(self.Intensity * 255 / 100), 'x')))
-
-	## Método que enviara al dispositivo la orden de cambiar a un color especifico
-	def SetIntensity(self, intensity):
-		## Fijamos la intensidad
-		self.Intensity = Clamp(intensity, 0, 255)
+		## Recorremos los parametros del request
+		for parameter in intent.Parameters:
+			## Reescribimos el parametro
+			IntentRequest["params"][parameter.Key] = parameter.Value
 
 		## Enviamos una peticion GET
-		return requests.get('http://{0}/?color={1}{2}'.format(self.Address, self.Color, format(int(self.Intensity * 255 / 100), 'x')))
+		return self.GET_Request(IntentRequest["url"].format(**IntentRequest["params"]))

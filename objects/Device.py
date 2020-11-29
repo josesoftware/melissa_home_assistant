@@ -4,6 +4,7 @@
 
 ## Importamos modulos necesarios
 import ipaddress
+import requests
 
 ## Clase que representa el módulo
 class IoTDevice:
@@ -21,3 +22,7 @@ class IoTDevice:
 		self.MACAddress = mac
 		## Fijamos el alias
 		self.Alias = alias
+
+	## Método que ejecuta un request mediante GET
+	def GET_Request(self, request):
+		return requests.get(request)
