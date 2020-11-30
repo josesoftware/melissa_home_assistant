@@ -22,9 +22,14 @@ class MelissaService:
 	## Lenguaje de trabajo del servicio
 	Language = None
 
-	#### Atributos estáticos
+	#### Atributos dinamicos
 	## Lista de dispositivos
-	Devices = []
+	Devices = { }
+	## Lista de ordnenes
+	Commands = { 
+		"descansa": { "intent": "abort" },
+		"que eres": { "intent": "say", "parameters": { "message": "Soy la caña chaval" } }
+	}
 
 	##### Instancias de módulos
 	## Instancia del modulo LED
@@ -103,11 +108,6 @@ class MelissaService:
 	def StartService(self):
 		## Inicia el primer paso del servicio de IoT
 		self.STT.Start()
-
-	## Método que recibe datos del servicio STT
-	def FromSTT(self, hypothesis):
-		## Envia la hipótesis del STT al NLU
-		self.NLU.FromSTT(hypothesis)
 
 	## Método que recibe datos del servicio NLU
 	def FromNLU(self, intent):

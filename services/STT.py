@@ -47,4 +47,4 @@ class STTService:
         ## Recorremos las frases que detecta el sistema LiveSpeech
         for phrase in self.SphinxService:
             ## Invocamos al metodo ReadSTT del servicio de IoT
-            self.Melissa.FromSTT(phrase.hypothesis())
+            self.Melissa.NLU.FromSTT(phrase.hypothesis())

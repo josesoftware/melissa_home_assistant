@@ -17,3 +17,10 @@ class NLUService:
     ## Método que recibe datos del servicio STT
     def FromSTT(self, sttInput):
         print(sttInput)
+
+    ## Método que busca comandos en un input del servicio STT
+    def MatchCommands(self, sttInput):
+        ## Desglosa el texto en palabras
+        inputWords = sttInput.split()
+
+        
