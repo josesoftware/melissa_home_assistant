@@ -4,8 +4,8 @@
 
 ## Diccionario de lenguajes
 LANGUAGE_DICTIONARY = {
-	"EN-US": { "tts_code": "british_english", "stt_model": "en-us", "keywords_file": "en-us_keywords"},
-	"ES-ES": { "tts_code": "castillian_spanish", "stt_model": "es-es", "keywords_file": "es-es_keywords"}
+	"EN-US": { "key": "EN-US", "tts_code": "british_english", "stt_model": "en-us", "keywords_file": "en-us_keywords"},
+	"ES-ES": { "key": "ES-ES", "tts_code": "castillian_spanish", "stt_model": "es-es", "keywords_file": "es-es_keywords"}
 }
 
 ## Diccionario de colores

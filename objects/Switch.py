@@ -4,7 +4,7 @@
 
 ## Importamos modulos necesarios
 import requests
-from Device import IoTDevice as Parent
+from objects.Device import IoTDevice as Parent
 
 ## Clase que representa el módulo
 class Switch(Parent):
@@ -14,20 +14,38 @@ class Switch(Parent):
 	## Constructor
 	def __init__(self, address, mac, alias):
 		# Constructor del objeto padre 
-		Parent.__init__(self, address, mac, alias) 
+		Parent.__init__(self, address, mac, alias)
+
+		## Inicializamos acciones disponibles
+		self.InitIntents()
   
-	## Método que enviará al dispositivo la orden de encenderse
-	def TurnON(self):
-		## Modificamos el estado del rele
-		self.Status = 'on'
+	## Inicializamos Actions con variables reales
+	def InitIntents(self):
+		## Acciones disponibles
+		self.Intents = {
+			"turn on": { "request": "http://{address}/?relay=on", "parameters": { "address": self.Address } },
+			"turn off": { "request": "http://{address}/?relay=off", "parameters": { "address": self.Address } }
+		}
+  
+	## Método que traduce un Intent en un request al dispositivo
+	def DoIntent(self, intent):
+		## Controlamos excepciones
+		try:
+			## Inicializamos el request basandonos en el 'intent'
+			request = self.Intents[intent["intent"]]
 
-		## Enviamos una peticion GET
-		return requests.get('http://{0}/?relay={1}'.format(self.Address, self.Status))
 
-	## Método que enviara al dispositivo la orden de apagarse
-	def TurnOFF(self):
-		## Modificamos el estado del rele
-		self.Status = 'off'
+			#### MODIFICACIONES DE ESTADO
+			## Si se pretender apagar el dispositivo
+			if intent["intent"] == 'turn off':
+				self.Status = 'off'
+			## Si se pretender encender el dispositivo
+			if intent["intent"] == 'turn on':
+				self.Status = 'on'
 
-		## Enviamos una peticion GET
-		return requests.get('http://{0}/?relay={1}'.format(self.Address, self.Status))
+
+			## Enviamos una peticion GET
+			return self.GET_Request(request["request"].format(**request["parameters"]))
+		except:
+			## Retornamos error
+			return "Intent not defined for this device"
