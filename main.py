@@ -23,7 +23,7 @@ Audio_Module = None # Pixels()
 ## Instanciamos servicios					##
 ##############################################
 ## Instanciamos el servicio Melissa
-Melissa = MelissaService(LANGUAGES["ES-ES"], LED_Module, DB_Module, Audio_Module)
+Melissa = MelissaService(LANGUAGES["EN-US"], LED_Module, DB_Module, Audio_Module)
 
 ## Iniciamos el servicio
 Melissa.StartService()

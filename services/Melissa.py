@@ -8,6 +8,9 @@ from services.TTS import TTSService
 from services.STT import STTService
 from services.NLU import NLUService
 
+## Importamos objetos
+from objects import *
+
 
 ## Definición de la clase
 class MelissaService:
@@ -18,6 +21,10 @@ class MelissaService:
 	Locked = False
 	## Lenguaje de trabajo del servicio
 	Language = None
+
+	#### Atributos estáticos
+	## Lista de dispositivos
+	Devices = []
 
 	##### Instancias de módulos
 	## Instancia del modulo LED
