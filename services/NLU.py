@@ -110,7 +110,7 @@ class NLUService:
 				_intent["parameters"]["intent"] = targetDeviceIntent
 
 				## Buscamos parametros "RAW" para llevar a cabo el intent
-				self.MatchIntentParams(_intent["parameters"]["intent"], phrase)
+				self.MatchIntentParams(targetDeviceIntent, phrase)
 
 			## Añadimos el intent al array de retorno
 			IntentArray.append(_intent)
