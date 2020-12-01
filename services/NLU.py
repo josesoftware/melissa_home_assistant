@@ -122,6 +122,8 @@ class NLUService:
 
 	## Método que busca parametros de un intent en una frase
 	def MatchIntentParams(self, intent, phrase):
+		print(intent)
+
 		## Recorremos cada uno de los parametros del intet
 		for parameter in intent["parameters"]:
 			## Si el parametro es "address" pasamos de cilco
