@@ -23,7 +23,7 @@ class NLUService:
 
 	## Método que recibe datos del servicio STT
 	def FromSTT(self, sttInput):
-		print(sttInput) 
+		print(self.MatchCommands(sttInput)) 
 
 	## Método que busca comandos en un input del servicio STT
 	def MatchCommands(self, sttInput):
@@ -100,7 +100,10 @@ class NLUService:
 				_intent["parameters"]["intent"] = targetDeviceIntent
 
 				## Buscamos parametros "RAW" para llevar a cabo el intent
-				self.MatchIntentParams(targetDeviceIntent, phrase)
+				self.MatchIntentParams(_intent["parameters"]["intent"], phrase)
+
+			## Añadimos el intent al array de retorno
+			IntentArray.append(_intent)
 
 
 
