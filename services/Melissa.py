@@ -9,7 +9,8 @@ from services.STT import STTService
 from services.NLU import NLUService
 
 ## Importamos objetos
-from objects import *
+from objects.Switch import Switch
+from objects.Bolb import Bolb
 
 
 ## Definición de la clase
@@ -71,6 +72,10 @@ class MelissaService:
 		self.STT = STTService(self)
 		## Instanciamos el servicio NLU
 		self.NLU = NLUService(self)
+
+		############# Debug
+		self.Devices["ventilador"] = Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
+		self.Devices["bombilla"] = Bolb("192.168.1.51", "AF:AF:AF:00:00:00", "bombilla")
 
 	## Método que despierta al servicio
 	def Wake(self):

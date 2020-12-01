@@ -35,6 +35,11 @@ class NLUService:
 
 		## Recorremos la lista de frases obtenida tras aplicar separadores
 		for phrase in commandPhrases:
+			################# DEBUG
+			## Mostramos el texto como debug
+			print(phrase)
+			################# END DEBUG
+
 			## Definimos una lista de posibles de ordenes
 			possibleCommands = [ ]
 
@@ -52,9 +57,6 @@ class NLUService:
 
 			## Si no hay resultados pasamos de cilco
 			if len(possibleCommands) == 0:
-				## Mostramos el texto como debug
-				print(phrase)
-
 				## Pasamos de ciclo
 				continue
 
