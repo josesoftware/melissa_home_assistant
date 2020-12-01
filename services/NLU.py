@@ -11,6 +11,9 @@ from libraries.lib_utils import CountWords, MultiSplit
 from dictionaries import translations as TRANSLATIONS
 from dictionaries.dictionary import COLOR_DICTIONARY as COLORS
 
+### DEBUG
+import json
+
 ## Definición del objeto
 class NLUService:
 	## Instancia del servicio de IoT
@@ -23,7 +26,10 @@ class NLUService:
 
 	## Método que recibe datos del servicio STT
 	def FromSTT(self, sttInput):
-		print(self.MatchCommands(sttInput)) 
+		## DEBUG - Mostramos string
+		print(sttInput)
+		## DEBUG - Mostramos Intent
+		print(json.dumps(self.MatchCommands(sttInput))) 
 
 	## Método que busca comandos en un input del servicio STT
 	def MatchCommands(self, sttInput):
@@ -35,11 +41,6 @@ class NLUService:
 
 		## Recorremos la lista de frases obtenida tras aplicar separadores
 		for phrase in commandPhrases:
-			################# DEBUG
-			## Mostramos el texto como debug
-			print(phrase)
-			################# END DEBUG
-
 			## Definimos una lista de posibles de ordenes
 			possibleCommands = [ ]
 
@@ -123,7 +124,7 @@ class NLUService:
 	## Método que busca parametros de un intent en una frase
 	def MatchIntentParams(self, device, intent, phrase):
 		## Definimos parametros de retorno
-		ReturnParams = { "parameters": { } }
+		ReturnParams = { }
 
 		## Recorremos cada uno de los parametros del intet
 		for parameter in self.Melissa.Devices[device].Intents[intent]["parameters"]:
@@ -137,7 +138,7 @@ class NLUService:
 				for color in TRANSLATIONS.TRANSLATION_COLOR:
 					## Si el color esta en la frase
 					if color in phrase:
-						ReturnParams["parameters"]["color"] = COLORS[TRANSLATIONS.TRANSLATION_COLOR[color]]["HEX"]
+						ReturnParams["color"] = COLORS[TRANSLATIONS.TRANSLATION_COLOR[color]]["HEX"]
 
 		## Retornamos resultados
 		return ReturnParams
