@@ -110,7 +110,7 @@ class NLUService:
 				_intent["parameters"]["intent"] = targetDeviceIntent
 
 				## Buscamos parametros "RAW" para llevar a cabo el intent
-				self.MatchIntentParams(targetDeviceIntent, phrase)
+				_intent["parameters"]["parameters"] = self.MatchIntentParams(targetDevice, targetDeviceIntent, phrase)
 
 			## Añadimos el intent al array de retorno
 			IntentArray.append(_intent)
@@ -121,11 +121,12 @@ class NLUService:
 		return IntentArray
 
 	## Método que busca parametros de un intent en una frase
-	def MatchIntentParams(self, intent, phrase):
-		print(intent)
+	def MatchIntentParams(self, device, intent, phrase):
+		## Definimos parametros de retorno
+		ReturnParams = { "parameters": { } }
 
 		## Recorremos cada uno de los parametros del intet
-		for parameter in intent["parameters"]:
+		for parameter in self.Melissa.Devices[device].Intents[intent]["parameters"]:
 			## Si el parametro es "address" pasamos de cilco
 			if parameter == "address":
 				continue
@@ -136,7 +137,10 @@ class NLUService:
 				for color in TRANSLATIONS.TRANSLATION_COLOR:
 					## Si el color esta en la frase
 					if color in phrase:
-						intent["parameters"]["color"] = COLORS[TRANSLATIONS.TRANSLATION_COLOR[color]]["HEX"]
+						ReturnParams["parameters"]["color"] = COLORS[TRANSLATIONS.TRANSLATION_COLOR[color]]["HEX"]
+
+		## Retornamos resultados
+		return ReturnParams
 
 	## Método que busca un intent de dispositivo en una frase
 	def MatchDeviceIntent(self, device, phrase):
