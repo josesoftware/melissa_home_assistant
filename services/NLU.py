@@ -50,6 +50,14 @@ class NLUService:
 					## Marcamos la orden como posible
 					possibleCommands.append(command)   
 
+			## Si no hay resultados pasamos de cilco
+			if len(possibleCommands) == 0:
+				## Mostramos el texto como debug
+				print(phrase)
+
+				## Pasamos de ciclo
+				continue
+
 			####################################################################
 			##### Nivel 2 de comprobación
 			## Comprueba si existe más de una orden a procesar en la misma frase
