@@ -27,9 +27,15 @@ class MelissaService:
 	Devices = { }
 	## Lista de ordnenes
 	Commands = { 
-		"descansa": { "intent": "abort" },
-		"que eres": { "intent": "say", "parameters": { "message": "Soy la caña chaval" } }
+		"descansa": { "intent": "abort", "parameters": { } },
+		"que eres": { "intent": "say", "parameters": { "message": "Soy la caña chaval", "keywords": [ ] } },
+		"enciende": { "intent": "exec", "parameters": { } }
 	}
+	## Lista de ordnenes
+	CommandSplitters = [
+		"y despues",
+		"y luego"
+	] 
 
 	##### Instancias de módulos
 	## Instancia del modulo LED
