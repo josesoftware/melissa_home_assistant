@@ -23,11 +23,13 @@ class DatabaseModule:
         self.connect()
     # Destructor
     def __del__(self):
+        print("Finished connection")
         # Quitamos la conexion con base de datos al acabar
         self.connection.close()
 
     # Método que conecta con base de datos
     def connect(self):
+        print("Starting connection")
         # Conectamos con base de datos
         self.connection = mysql.connector.connect(
             host=self.server,
