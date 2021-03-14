@@ -51,3 +51,7 @@ class DatabaseModule:
             return json.dumps(results)
         except Error as err:
             print(f"Error: '{err}'")
+
+
+p1 = DatabaseModule()
+print(p1.read_query("select * from melissa_command;"))
