@@ -5,9 +5,9 @@
 ##################################
 ## Importamos diccionarios
 from dictionaries.dictionary import LANGUAGE_DICTIONARY as LANGUAGES
-from database import DatabaseModule
+from modules.database_module import DatabaseModule
 ## Importacion de objetos
-#from services.Melissa import MelissaService
+from services.Melissa import MelissaService
 
 #############################################
 ##	Instanciamos Módulos				   ##
