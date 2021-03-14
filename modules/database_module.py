@@ -21,6 +21,10 @@ class DatabaseModule:
     def __init__(self):
         # Conectamos con base de datos
         self.connect()
+    # Destructor
+    def __del__(self):
+        # Quitamos la conexion con base de datos al acabar
+        self.connection.close()
 
     # Método que conecta con base de datos
     def connect(self):
@@ -39,6 +43,7 @@ class DatabaseModule:
             cursor.execute(query)
             self.connection.commit()
             print("Query successful")
+            cursor.close()
         except Error as err:
             print(f"Error: '{err}'")
 
@@ -49,5 +54,6 @@ class DatabaseModule:
             cursor.execute(query)
             results = cursor.fetchall()
             return json.dumps(results)
+            cursor.close()
         except Error as err:
             print(f"Error: '{err}'")
