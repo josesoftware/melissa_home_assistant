@@ -10,26 +10,26 @@ import requests
 class IoTDevice:
 
 	## Atributos comunes en todos los dispositivos
-	IPAddress = ipaddress.ip_address('255.255.255.255')
-	MACAddress = 'FF:FF:FF:FF:FF'
-	Alias = 'Default'
+	address = ipaddress.ip_address('255.255.255.255')
+	macAddress = 'FF:FF:FF:FF:FF'
+	alias = 'Default'
 
 	## Definimos acciones disponibles
-	Intents = { }
+	intents = { }
 
 	## Constructor
 	def __init__(self, address, mac, alias):
 		## Fijamos la direccion IP
-		self.Address = ipaddress.ip_address(address)
+		self.address = ipaddress.ip_address(address)
 		## Fijamos la direccion MAC
-		self.MACAddress = mac
+		self.macAddress = mac
 		## Fijamos el alias
-		self.Alias = alias
+		self.alias = alias
 
 	## Método que ejecuta un request mediante GET
-	def GET_Request(self, request):
+	def get_request(self, request):
 		return requests.get(request)
 
 	## Método que traduce un Intent en un request al dispositivo
-	def DoIntent(self, intent):
+	def do_intent(self, intent):
 		pass

@@ -9,7 +9,7 @@ from objects.Device import IoTDevice as Parent
 ## Clase que representa el módulo
 class Switch(Parent):
 	## Atributo de estado
-	Status = 'off'
+	status = 'off'
 
 	## Constructor
 	def __init__(self, address, mac, alias):
@@ -17,35 +17,35 @@ class Switch(Parent):
 		Parent.__init__(self, address, mac, alias)
 
 		## Inicializamos acciones disponibles
-		self.InitIntents()
+		self.init_intents()
   
 	## Inicializamos Actions con variables reales
-	def InitIntents(self):
+	def init_intents(self):
 		## Acciones disponibles
-		self.Intents = {
-			"turn on": { "request": "http://{address}/?relay=on", "parameters": { "address": self.Address } },
-			"turn off": { "request": "http://{address}/?relay=off", "parameters": { "address": self.Address } }
+		self.intents = {
+			"turn on": { "request": "http://{address}/?relay=on", "parameters": { "address": self.address } },
+			"turn off": { "request": "http://{address}/?relay=off", "parameters": { "address": self.address } }
 		}
   
 	## Método que traduce un Intent en un request al dispositivo
-	def DoIntent(self, intent):
+	def do_intent(self, intent):
 		## Controlamos excepciones
 		try:
 			## Inicializamos el request basandonos en el 'intent'
-			request = self.Intents[intent["intent"]]
+			request = self.intents[intent["intent"]]
 
 
 			#### MODIFICACIONES DE ESTADO
 			## Si se pretender apagar el dispositivo
 			if intent["intent"] == 'turn off':
-				self.Status = 'off'
+				self.status = 'off'
 			## Si se pretender encender el dispositivo
 			if intent["intent"] == 'turn on':
-				self.Status = 'on'
+				self.status = 'on'
 
 
 			## Enviamos una peticion GET
-			return self.GET_Request(request["request"].format(**request["parameters"]))
+			return self.get_request(request["request"].format(**request["parameters"]))
 		except:
 			## Retornamos error
 			return "Intent not defined for this device"
