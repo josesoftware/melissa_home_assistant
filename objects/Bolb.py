@@ -26,10 +26,10 @@ class Bolb(Parent):
 	def init_intents(self):
 		## Acciones disponibles
 		self.intents = {
-			"turn on": { "request": "http://{address}/?light=on", "parameters": { "address": self.Address } },
-			"turn off": { "request": "http://{address}/?light=off", "parameters": { "address": self.Address } },
-			"color set": { "request": "http://{address}/?color={color}", "parameters": { "address": self.Address, "color": self.color } },
-			"intensity set": { "request": "http://{address}/?intensity={intensity}", "parameters": { "address": self.Address, "intensity": self.intensity } }
+			"turn on": { "request": "http://{address}/?light=on", "parameters": { "address": self.address } },
+			"turn off": { "request": "http://{address}/?light=off", "parameters": { "address": self.address } },
+			"color set": { "request": "http://{address}/?color={color}", "parameters": { "address": self.address, "color": self.color } },
+			"intensity set": { "request": "http://{address}/?intensity={intensity}", "parameters": { "address": self.address, "intensity": self.intensity } }
 		}
 
 	## Método que traduce un Intent en un request al dispositivo
@@ -67,7 +67,7 @@ class Bolb(Parent):
 					request["parameters"][parameter] = Clamp(int(intent["parameters"][parameter]), 0, 100)
 
 			## Enviamos una peticion GET
-			return self.GET_Request(request["request"].format(**request["parameters"]))
+			return self.get_request(request["request"].format(**request["parameters"]))
 		except:
 			## Retornamos error
 			return "Intent not defined for this device"
