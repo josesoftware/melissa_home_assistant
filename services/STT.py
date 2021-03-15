@@ -58,12 +58,12 @@ class STTService:
 			full_utt = False,
 			hmm = os.path.join(get_model_path(), self.melissa.language["stt_model"]),
 			#lm = os.path.join(model_path, 'es-20k.lm.bin'), ## Para detectar todo tipo de palabras en castellano
-			kws = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.Language["keywords_file"] + '.list'),
-			dict = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.Language["keywords_file"] + '.dict')
+			kws = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.list'),
+			dict = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.dict')
 		)
 
 		## Definimos el modelo de lenguaje para Vosk
-		self.voskModel = vosk.Model(os.path.join(os.path.dirname(__file__), 'STT_Components/vosk_models/', self.melissa.Language["stt_model"]))
+		self.voskModel = vosk.Model(os.path.join(os.path.dirname(__file__), 'STT_Components/vosk_models/', self.melissa.language["stt_model"]))
 
 		## Mensaje de inicio
 		print("Speech recognition starts")
