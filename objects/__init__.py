@@ -11,17 +11,17 @@ from string import Formatter
 class Intent:
 	## Método estático que crea un objeto 'Intent' desde un texto diccionario
 	@staticmethod
-	def GetObject(dictionary):
-		return json.loads(json.dumps(dictionary), object_hook=Intent.FromJSON)
+	def get_object(dictionary):
+		return json.loads(json.dumps(dictionary), object_hook=Intent.from_json)
 
 	## Método estático que devuelve un 'namedTuple' de un texto JSON
 	@staticmethod
-	def FromJSON(jsonIntent):
+	def from_json(jsonIntent):
 		## Retornaremos el 'namedTuple' obtenido del diccionario JSON
 		return namedtuple('X', jsonIntent.keys())(*jsonIntent.values())
 
 	## Método que extrae parametros de un string formateado
 	@staticmethod
-	def GetFormatStringParameters(inString):
+	def get_format_string_parameters(inString):
 		## Retornamos array de parametros
 		return [fname for _, fname, _, _ in Formatter().parse(inString) if fname]
