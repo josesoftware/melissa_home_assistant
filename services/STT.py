@@ -7,44 +7,133 @@
 ## Importacion de modulos necesarios
 import os
 from pocketsphinx import LiveSpeech, get_model_path
+import queue
+import sounddevice as sd
+import vosk
+import sys
+import time
+import json
 
 ## Definición de la clase
 class STTService:
-    ## Servicio Sphinx
-    SphinxService = None
+	##### Sphinx
+	## Servicio Sphinx
+	sphinxService = None
 
-    ## Instancia del servicio melissa
-    Melissa = None
+	## Constantes del Servicio STT (Sphinx)
+	SPHINX_SAMPLE_RATE = 20000 # Hz
+	SPHINX_BUFFER_SIZE = 1024
 
-    ## Configuracion del Servicio STT
-    SAMPLE_RATE = 20000 # Hz
-    BUFFER_SIZE = 1024
+	##### Vosk
+	## Servicio Vosk
+	voskService = None
+	## Variables del Servicio STT (Vosk)
+	voskModel = None
+	## Queues que usará el servicio Vosk
+	q = queue.Queue()
+	## Constantes del Servicio STT (Vosk)
+	VOSK_SAMPLE_RATE = 16000 # Hz
+	VOSK_BUFFER_SIZE = 8000
+	VOSK_INPUT_AUDIO_ID = 0
+	VOSK_TIMEOUT = 10
 
-    ## Constructor
-    def __init__(self, melissaService):
-        ## Instanciamos el servicio de IoT
-        self.Melissa = melissaService
+	##### Otros
+	## Instancia del servicio melissa
+	melissa = None
 
-    ## Método que arranca el LiveSpeech de PocketSphinx
-    def Start(self):
-        ## Inicializamos el serivio Sphinx
-        self.SphinxService = LiveSpeech(
-            lm = False,
-            verbose = True,
-            sampling_rate = self.SAMPLE_RATE,
-            buffer_size = self.BUFFER_SIZE,
-            no_search = False,
-            full_utt = False,
-            hmm = os.path.join(get_model_path(), self.Melissa.Language["stt_model"]),
-            #lm = os.path.join(model_path, 'es-20k.lm.bin'), ## Para detectar todo tipo de palabras en castellano
-            kws = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.Melissa.Language["keywords_file"] + '.list'),
-            dict = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.Melissa.Language["keywords_file"] + '.dict')
-        )
+	## Constructor
+	def __init__(self, melissaService):
+		## Instanciamos el servicio de IoT
+		self.melissa = melissaService
 
-        ## Mensaje de inicio
-        print("Speech recognition starts")
+	## Método que arranca el LiveSpeech de PocketSphinx
+	def start(self):
+		## Inicializamos el serivio Sphinx
+		self.sphinxService = LiveSpeech(
+			lm = False,
+			verbose = True,
+			sampling_rate = self.SPHINX_SAMPLE_RATE,
+			buffer_size = self.SPHINX_BUFFER_SIZE,
+			no_search = False,
+			full_utt = False,
+			hmm = os.path.join(get_model_path(), self.melissa.language["stt_model"]),
+			#lm = os.path.join(model_path, 'es-20k.lm.bin'), ## Para detectar todo tipo de palabras en castellano
+			kws = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.Language["keywords_file"] + '.list'),
+			dict = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.Language["keywords_file"] + '.dict')
+		)
 
-        ## Recorremos las frases que detecta el sistema LiveSpeech
-        for phrase in self.SphinxService:
-            ## Invocamos al metodo ReadSTT del servicio de IoT
-            self.Melissa.NLU.FromSTT(phrase.hypothesis())
+		## Definimos el modelo de lenguaje para Vosk
+		self.voskModel = vosk.Model(os.path.join(os.path.dirname(__file__), 'STT_Components/vosk_models/', self.melissa.Language["stt_model"]))
+
+		## Mensaje de inicio
+		print("Speech recognition starts")
+
+		## Recorremos las frases que detecta el sistema LiveSpeech
+		for phrase in self.sphinxService:
+			## Si el sistema estaba bloqueado ignorará comandos
+			if self.melissa.wakeUp == True:
+				continue
+
+			## Si el NLU lo autoriza procesamos texto en nivel 2
+			if self.melissa.nlu.match_wake_word(phrase.hypothesis()) == True:
+				## Pasamos al nivel 2 de interpretacion
+				self.second_level_stt()
+
+	## Método usado por Vosk
+	def vosk_callback(self, indata, frames, time, status):
+		"""This is called (from a separate thread) for each audio block."""
+		if status:
+			print(status, file=sys.stderr)
+		self.q.put(bytes(indata))
+
+	## Método privado que fija un timeout
+	def set_timeout(self):
+		return time.time() + self.VOSK_TIMEOUT
+
+	## Método privado que chequea un timeout
+	def check_timeout(self, prevTimeout):
+		## Retorna el resultado de la comparativa
+		return time.time() > prevTimeout
+
+	## Método privado que se dedica a procesar texto en segundo nivel
+	def second_level_stt(self):
+		with sd.RawInputStream(samplerate=self.VOSK_SAMPLE_RATE, blocksize=self.VOSK_BUFFER_SIZE, device=self.VOSK_INPUT_AUDIO_ID, dtype='int16', channels=1, callback=self.vosk_callback):
+			## Mostramos mensaje de aviso
+			print('Second level STT proccessing')
+
+			## Inicializamos el reconocimiento de voz en segundo nivel
+			rec = vosk.KaldiRecognizer(self.voskModel, self.VOSK_SAMPLE_RATE)
+
+			## Inicializamos un timeout
+			timeout = self.set_timeout()
+
+			## Bucle infinito controlado
+			while True:
+				## Recuperamos los datos de audio
+				data = self.q.get()
+
+				## Si detecta una frase
+				if rec.AcceptWaveform(data):
+					## Recupera el resultado
+					dataDic = json.load(rec.Result())
+
+					## Mandamos la frase al NLU
+					self.melissa.nlu.from_stt(dataDic["text"])
+
+					## Salimos del bucle controlado
+					break
+				else:
+					## Recupera el resultado
+					dataWord = json.load(rec.PartialResult())
+
+					## Si no se ha detectado una frase entera pero detectamos palabras
+					if dataWord["partial"] != "":
+						## Reseteamos el timeout si se detectan palabras
+						self.set_timeout()
+				
+				## Si se excede el timeout salimos del bucle controlado
+				if self.check_timeout(timeout):
+					break
+
+			## Dormimos a la inteligencia artificial
+			self.melissa.sleep()

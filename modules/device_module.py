@@ -10,21 +10,21 @@ import ipaddress
 class IoTDevice:
 
 	## Atributos
-	Address = ipaddress.ip_address('255.255.255.255')
+	address = ipaddress.ip_address('255.255.255.255')
 
 	## Constructor
 	def __init__(self, address):
 		## Fijamos la direccion IP
-		self.Address = ipaddress.ip_address(address)
+		self.address = ipaddress.ip_address(address)
 
 	## Método que enviará al dispositivo la orden de encenderse
-	def TurnON(self):
+	def turn_on(self):
 
 		## Enviamos una peticion GET
-		return requests.get('http://%s/?relay=on' % self.Address)
+		return requests.get('http://%s/?relay=on' % self.address)
 
 	## Método que enviara al dispositivo la orden de apagarse
-	def TurnOFF(self):
+	def turn_off(self):
 
 		## Enviamos una peticion GET
-		return requests.get('http://%s/?relay=off' % self.Address)
+		return requests.get('http://%s/?relay=off' % self.address)

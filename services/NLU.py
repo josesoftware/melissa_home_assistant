@@ -5,7 +5,7 @@
 ###############################################################
 
 ## Importamos metodos de la libreria de utilidades
-from libraries.lib_utils import CountWords, MultiSplit
+from libraries.lib_utils import count_words, multi_split
 
 ## Importamos diccionarios
 from dictionaries import translations as TRANSLATIONS
@@ -17,27 +17,42 @@ import json
 ## Definición del objeto
 class NLUService:
 	## Instancia del servicio de IoT
-	Melissa = None  
+	melissa = None  
 
 	## Constructor
 	def __init__(self, melissaService):
 		## Instanciamos el servicio Melissa
-		self.Melissa = melissaService   
+		self.melissa = melissaService   
 
 	## Método que recibe datos del servicio STT
-	def FromSTT(self, sttInput):
+	def from_stt(self, sttInput):
 		## DEBUG - Mostramos string
 		print(sttInput)
 		## DEBUG - Mostramos Intent
-		print(json.dumps(self.MatchCommands(sttInput))) 
+		print(json.dumps(self.match_commands(sttInput))) 
+
+	## Método que recibe datos del servicio STT en busca de la WakeWord
+	def match_wake_word(self, sttInput):
+		## Recorremos cada uno de los wakeWords definidos
+		for wakeWord in self.melissa.wakeWords:
+			## Comprueba que el input del STT sea un WakeWord
+			if sttInput == wakeWord:
+				## Despierta el reconocimiento de voz
+				self.melissa.wake()
+
+				## Retorna True si el input del STT es un WakeWord
+				return True
+
+			## Por defecto retornará False para no despertar más servicios
+			return False
 
 	## Método que busca comandos en un input del servicio STT
-	def MatchCommands(self, sttInput):
+	def match_commands(self, sttInput):
 		## Separamos primero la hipotesis del STT mediante los separadores de comando
-		commandPhrases = MultiSplit(sttInput, self.Melissa.CommandSplitters)
+		commandPhrases = multi_split(sttInput, self.melissa.commandsplitters)
 
 		## Definimos un Array de Intents de retorno
-		IntentArray = [ ]
+		intentArray = [ ]
 
 		## Recorremos la lista de frases obtenida tras aplicar separadores
 		for phrase in commandPhrases:
@@ -50,7 +65,7 @@ class NLUService:
 			####################################################################
 			##### Nivel 1 de comprobación
 			## Recorremos cada una de las ordenes
-			for command in self.Melissa.Commands:
+			for command in self.melissa.commands:
 				## Si el comando está en la frase recibida del STT
 				if command in phrase:
 					## Marcamos la orden como posible
@@ -66,19 +81,19 @@ class NLUService:
 			## Comprueba si existe más de una orden a procesar en la misma frase
 			if len(possibleCommands) > 1:
 				## Retorna Intent vacio
-				return IntentArray
+				return intentArray
 
 			####################################################################
 			##### Nivel 3 de comprobación
 			## Comprobamos si es un comando simple 
 			## Recorremos cada comando
 			## Comprobamos si el comando tiene la misma cantidad de palabras que la frase
-			if CountWords(sttInput) == CountWords(possibleCommands[0]):
+			if count_words(sttInput) == count_words(possibleCommands[0]):
 				## Retornamos directamente el comando sin parametrizar
-				return self.Melissa.Commands[possibleCommands[0]]
+				return self.melissa.commands[possibleCommands[0]]
 			else:
 				## Componemos un intent basandonos en la plantilla
-				_intent = self.Melissa.Commands[possibleCommands[0]]
+				_intent = self.melissa.commands[possibleCommands[0]]
 
 			####################################################################
 			##### Nivel 4 de comprobación
@@ -89,7 +104,7 @@ class NLUService:
 				##### Nivel 5 de comprobación
 				### Basándonos en el tipo de intent, identificamos los RAW commands
 				## Ordenamos hacer match de dispositivo
-				targetDevice = self.MatchDevice(phrase)
+				targetDevice = self.match_device(phrase)
 
 				## Si se ha identificado el dispositivo
 				if targetDevice is None:
@@ -100,7 +115,7 @@ class NLUService:
 				_intent["parameters"]["device"] = targetDevice
 
 				## Ordenamos hacer match de intent del dispositivo
-				targetDeviceIntent = self.MatchDeviceIntent(targetDevice, phrase)
+				targetDeviceIntent = self.match_device_intent(targetDevice, phrase)
 
 				## Si no se encuentra ningun intent
 				if targetDeviceIntent is None:
@@ -111,23 +126,23 @@ class NLUService:
 				_intent["parameters"]["intent"] = targetDeviceIntent
 
 				## Buscamos parametros "RAW" para llevar a cabo el intent
-				_intent["parameters"]["parameters"] = self.MatchIntentParams(targetDevice, targetDeviceIntent, phrase)
+				_intent["parameters"]["parameters"] = self.match_intent_params(targetDevice, targetDeviceIntent, phrase)
 
 			## Añadimos el intent al array de retorno
-			IntentArray.append(_intent)
+			intentArray.append(_intent)
 
 
 
 		##### Exportación de resultados
-		return IntentArray
+		return intentArray
 
 	## Método que busca parametros de un intent en una frase
-	def MatchIntentParams(self, device, intent, phrase):
+	def match_intent_params(self, device, intent, phrase):
 		## Definimos parametros de retorno
 		ReturnParams = { }
 
 		## Recorremos cada uno de los parametros del intet
-		for parameter in self.Melissa.Devices[device].Intents[intent]["parameters"]:
+		for parameter in self.melissa.devices[device].Intents[intent]["parameters"]:
 			## Si el parametro es "address" pasamos de cilco
 			if parameter == "address":
 				continue
@@ -144,9 +159,9 @@ class NLUService:
 		return ReturnParams
 
 	## Método que busca un intent de dispositivo en una frase
-	def MatchDeviceIntent(self, device, phrase):
+	def match_device_intent(self, device, phrase):
 		## Recorremos la lista de dispositivos
-		for intent in self.Melissa.Devices[device].Intents:
+		for intent in self.melissa.devices[device].Intents:
 			## Si se encuentra el intent dispositivo en la frase
 			if TRANSLATIONS.TRANSLATION_DEVICE_COMMANDS[intent] in phrase:
 				## Retornamos el intent a ejecutar
@@ -156,9 +171,9 @@ class NLUService:
 		return None
 
 	## Método que busca un dispositivo en la lista de dispositivos
-	def MatchDevice(self, phrase):
+	def match_device(self, phrase):
 		## Recorremos la lista de dispositivos
-		for device in self.Melissa.Devices:
+		for device in self.melissa.devices:
 			## Si se encuentra el dispositivo en la frase
 			if device in phrase:
 				## Retornamos el nombre del dispositivo

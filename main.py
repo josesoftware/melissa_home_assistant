@@ -13,18 +13,18 @@ from services.Melissa import MelissaService
 ##	Instanciamos Módulos				   ##
 #############################################
 ## Instanciamos el modulo controlador de los LED
-LED_Module = None # Pixels()
+ledModule = None # Pixels()
 ## Instanciamos el modulo de base de datos
-DB_Module = DatabaseModule # Pixels()
+dbModule = DatabaseModule # Pixels()
 ## Instanciamos el modulo controlador de audio
-Audio_Module = None # Pixels()
+audioModule = None # Pixels()
 
 ##############################################
 ## Instanciamos servicios					##
 ##############################################
 ## Instanciamos el servicio Melissa
-Melissa = MelissaService(LANGUAGES["ES-ES"], LED_Module, DB_Module, Audio_Module)
+melissa = MelissaService(LANGUAGES["ES-ES"], ledModule, dbModule, audioModule)
 
 ## Iniciamos el servicio
-Melissa.StartService()
-print(DB_Module)
+melissa.start_service()
+print(dbModule)

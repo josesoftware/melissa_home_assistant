@@ -55,7 +55,7 @@ class DatabaseModule:
         try:
             cursor.execute(query)
             results = cursor.fetchall()
-            return json.dumps(results)
             cursor.close()
+            return json.dumps(results)
         except Error as err:
             print(f"Error: '{err}'")

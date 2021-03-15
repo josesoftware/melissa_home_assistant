@@ -6,12 +6,12 @@
 import re
 
 ## Método que cuenta palabras de un string
-def CountWords(inString):
+def count_words(inString):
 	## Retorna el recuento de palabras
 	return len(inString.split())
 
 ## Método que reliza un split con multiples delimitadores
-def MultiSplit(inString, delimitterList):
+def multi_split(inString, delimitterList):
 	## Definimos primero el string de delimitadores
 	delimitters = ""
 

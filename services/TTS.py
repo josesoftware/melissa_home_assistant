@@ -11,14 +11,14 @@ import os
 class TTSService:
 	#### Atributos
 	## Baliza que indica si el TTS esta en uso
-	Speaking = False
+	speaking = False
 
 	#### Instancias
 	## Instancia del servicio de IoT
-	Melissa = None
+	melissa = None
 
 	## Array que componen los mensajes comúnes
-	CommonMessages = {
+	commonMessages = {
 		"done_messages": { 
 			"ES-ES": ["De acuerdo", "Hecho", "Listo", "Okey", "Vale"], 
 			"EN-US": ["I go it", "Done", "Ready", "Okey"] 
@@ -28,76 +28,76 @@ class TTSService:
 	## Constructor
 	def __init__(self, iot_service):
 		## Fijamos la instancia del modulo LED
-		self.Melissa = iot_service
+		self.melissa = iot_service
 
 	## Método que devuelve un mensaje de audio para indicar que se ha realizado correctamente una opción
-	def SayDoneMessage(self):
+	def say_done_message(self):
 		## Si no se ha definido un servicio de IoT
-		if self.Melissa.Language is None:
+		if self.melissa.language is None:
 			return
 
 		## Controlamos excepciones
 		try:
 			## Marcamos la baliza como Speaking
-			self.Speaking = True
+			self.speaking = True
 
 			## Calculamos un indice al azar de mensaje
-			message_index = random.randint(0, len(self.CommonMessages["done_messages"][self.Melissa.Language["key"]]) - 1)
+			message_index = random.randint(0, len(self.commonMessages["done_messages"][self.melissa.language["key"]]) - 1)
 
 			## Leds en modo habla
-			if self.Melissa.LED_Module is not None:
-				self.Melissa.LED_Module.speak()
+			if self.melissa.module_led is not None:
+				self.melissa.module_led.speak()
 
 			## Lanzamos el TTS con un mensaje de confirmación correcta seleccionado al azar
-			process = subprocess.Popen((os.path.dirname(__file__) + '/TTS/speak.sh "{0}" {1}'.format(self.CommonMessages["done_messages"][self.Melissa.Language["key"]][message_index], self.Melissa.Language["tts_code"])), shell=True, stdout=subprocess.PIPE)
+			process = subprocess.Popen((os.path.dirname(__file__) + '/TTS/speak.sh "{0}" {1}'.format(self.commonMessages["done_messages"][self.melissa.language["key"]][message_index], self.melissa.language["tts_code"])), shell=True, stdout=subprocess.PIPE)
 			## Esperamos a que termine
 			process.wait()
 
 			## Leds en modo escucha
-			if self.Melissa.LED_Module is not None:
-				self.Melissa.LED_Module.listen()
+			if self.melissa.module_led is not None:
+				self.melissa.module_led.listen()
 
 			## Modificamos la valiza de uso de servicio
-			self.Speaking = False
+			self.speaking = False
 		except:
 			## Mostramos mensaje de error
 			print("Current language not supported")
 			## Modificamos la valiza de uso de servicio
-			self.Speaking = False
+			self.speaking = False
 			## Salimos del método
 			return
 
 	## Método que devuelve un mensaje de audio para indicar que se ha realizado correctamente una opción
-	def SayMessage(self, message):
+	def say_message(self, message):
 		## Si no se ha definido un servicio de IoT
-		if self.Melissa is None:
+		if self.melissa is None:
 			return
 
 		## Controlamos excepciones
 		try:
 			## Marcamos la baliza como Speaking
-			self.Speaking = True
+			self.speaking = True
 
 			## Leds en modo habla
-			if self.Melissa.LED_Module is not None:
-				self.Melissa.LED_Module.speak()
+			if self.melissa.module_led is not None:
+				self.melissa.module_led.speak()
 
 			## Lanzamos el TTS con el mensaje pasado por parametro
-			process = subprocess.Popen((os.path.dirname(__file__) + '/TTS/speak.sh "{0}" {1}'.format(message, self.Melissa.Language["tts_code"])), shell=True, stdout=subprocess.PIPE)
+			process = subprocess.Popen((os.path.dirname(__file__) + '/TTS/speak.sh "{0}" {1}'.format(message, self.melissa.language["tts_code"])), shell=True, stdout=subprocess.PIPE)
 			
 			## Esperamos a que termine
 			process.wait()
 
 			## Leds en modo escucha
-			if self.Melissa.LED_Module is not None:
-				self.Melissa.LED_Module.listen()
+			if self.melissa.module_led is not None:
+				self.melissa.module_led.listen()
 
 			## Modificamos la valiza de uso de servicio
-			self.Speaking = False
+			self.speaking = False
 		except:
 			## Mostramos mensaje de error
 			print("Current language not supported")
 			## Modificamos la valiza de uso de servicio
-			self.Speaking = False
+			self.speaking = False
 			## Salimos del método
 			return

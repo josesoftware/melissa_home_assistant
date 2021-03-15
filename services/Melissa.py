@@ -17,98 +17,102 @@ from objects.Bolb import Bolb
 class MelissaService:
 	#### Atributos estaticos
 	## Idicador de estado
-	WakeUp = False
+	wakeUp = False
 	## Indicador de bloqueo
-	Locked = False
+	locked = False
 	## Lenguaje de trabajo del servicio
-	Language = None
+	language = None
 
 	#### Atributos dinamicos
 	## Lista de dispositivos
-	Devices = { }
+	devices = { }
 	## Lista de ordnenes
-	Commands = { 
+	commands = { 
 		"descansa": { "intent": "abort", "parameters": { } },
 		"que eres": { "intent": "say", "parameters": { "message": "Soy la caña chaval", "keywords": [ ] } },
 		"enciende": { "intent": "exec", "parameters": { } },
 		"cambia color": { "intent": "exec", "parameters": { } }
 	}
 	## Lista de ordnenes
-	CommandSplitters = [
+	commandSplitters = [
 		"y despues",
 		"y luego"
 	] 
+	## Lista de WakeWords
+	wakeWords = [
+		"melissa"
+	]
 
 	##### Instancias de módulos
 	## Instancia del modulo LED
-	LED_Module = None
+	module_led = None
 	## Instancia del modulo de base de datos
-	DB_Module = None
+	module_db = None
 	## Instancia del modulo audio
-	Audio_Module = None
+	module_audio = None
 
 
 	##### Instancia de servicios
-	TTS = None
-	STT = None
-	NLU = None
+	tts = None
+	stt = None
+	nlu = None
 
 	## Constructor
-	def __init__(self, language, LED_Module, DB_Module, Audio_Module):
+	def __init__(self, language, led_module, db_module, audio_module):
 		############# Instancia de los modulos
 		## Definimos el lenguaje de trabajo
-		self.Language = language
+		self.language = language
 		## Instanciamos el módulo LED
-		self.LED_Module = LED_Module
+		self.module_led = led_module
 		## Instanciamos el módulo de base de datos
-		self.DB_Module = DB_Module
+		self.module_db = db_module
 		## Instanciamos el módulo de audio
-		self.Audio_Module = Audio_Module
+		self.module_audio = audio_module
 
 		############# Instancia del resto de servicios
 		## Instanciamos el servicio TTS
-		self.TTS = TTSService(self)
+		self.tts = TTSService(self)
 		## Instanciamos el servicio STT
-		self.STT = STTService(self)
+		self.stt = STTService(self)
 		## Instanciamos el servicio NLU
-		self.NLU = NLUService(self)
+		self.nlu = NLUService(self)
 
 		############# Debug
-		self.Devices["ventilador"] = Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
-		self.Devices["bombilla"] = Bolb("192.168.1.51", "AF:AF:AF:00:00:00", "bombilla")
+		self.devices["ventilador"] = Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
+		self.devices["bombilla"] = Bolb("192.168.1.51", "AF:AF:AF:00:00:00", "bombilla")
 
 	## Método que despierta al servicio
-	def Wake(self):
+	def wake(self):
 		## Modificamos la valiza de estado
-		self.WakeUp = True
+		self.wakeUp = True
 
 		## Animamos los led con la animacion de despertar
-		if self.LED_Module is not None:
-			self.LED_Module.wakeup()
+		if self.module_led is not None:
+			self.module_led.wakeup()
 
 		## Mensaje de aviso
 		print("Melissa is wake up")
 
 	## Método que duerme al servicio
-	def Sleep(self):
+	def sleep(self):
 		## Modificamos la valiza de estado
-		self.WakeUp = False
+		self.wakeUp = False
 
 		## Apagamos los led
-		if self.LED_Module is not None:
-			self.LED_Module.off()
+		if self.module_led is not None:
+			self.module_led.off()
 
 		## Mensaje de aviso
 		print("Melissa is sleeping")
 
 	## Método que aborta el servicio
-	def Abort(self):
+	def abort(self):
 		## Modificamos la valiza de estado
-		self.WakeUp = False
+		self.wakeUp = False
 
 		## Apagamos los led
-		if self.LED_Module is not None:
-			self.LED_Module.off()
+		if self.module_led is not None:
+			self.module_led.off()
 
 		## Mensaje de aviso
 		print("See you soon!")
@@ -117,10 +121,10 @@ class MelissaService:
 		quit()
 
 	## Método inicia el servicio de IoT
-	def StartService(self):
+	def start_service(self):
 		## Inicia el primer paso del servicio de IoT
-		self.STT.Start()
+		self.stt.start()
 
 	## Método que recibe datos del servicio NLU
-	def FromNLU(self, intent):
+	def from_nlu(self, intent):
 		pass
