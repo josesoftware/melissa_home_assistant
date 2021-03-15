@@ -115,7 +115,7 @@ class STTService:
 				## Si detecta una frase
 				if rec.AcceptWaveform(data):
 					## Recupera el resultado
-					dataDic = json.load(rec.Result())
+					dataDic = json.loads(rec.Result())
 
 					## Mandamos la frase al NLU
 					self.melissa.nlu.from_stt(dataDic["text"])
@@ -124,7 +124,7 @@ class STTService:
 					break
 				else:
 					## Recupera el resultado
-					dataWord = json.load(rec.PartialResult())
+					dataWord = json.loads(rec.PartialResult())
 
 					## Si no se ha detectado una frase entera pero detectamos palabras
 					if dataWord["partial"] != "":
