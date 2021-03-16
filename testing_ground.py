@@ -6,4 +6,4 @@
 from modules.database_module import DatabaseModule
 
 p1 = DatabaseModule()
-print(p1.read_query("select * from melissa_command;"))
+print(p1.read_query("select command, language from melissa_command;"))
