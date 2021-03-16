@@ -116,10 +116,9 @@ class STTService:
 					dataDic = json.loads(rec.Result())
 
 					## Mandamos la frase al NLU
-					self.melissa.nlu.match_wake_word(dataDic["text"])
-
-					## Salimos del bucle controlado
-					break
+					if self.melissa.nlu.match_wake_word(dataDic["text"]) == True:
+						## Salimos del bucle controlado
+						break
 
 		## Pasamos a segundo nivel de comprobación
 		self.second_level_stt()
