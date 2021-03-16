@@ -68,16 +68,19 @@ class STTService:
 		## Mensaje de inicio
 		print("Speech recognition starts")
 
+		## Lanzamos el STT
+		self.first_level_stt()
+
 		## Recorremos las frases que detecta el sistema LiveSpeech
-		for phrase in self.sphinxService:
+		# for phrase in self.sphinxService:
 			## Si el sistema estaba bloqueado ignorará comandos
-			if self.melissa.wakeUp == True:
-				continue
+			# if self.melissa.wakeUp == True:
+				# continue
 
 			## Si el NLU lo autoriza procesamos texto en nivel 2
-			if self.melissa.nlu.match_wake_word(phrase.hypothesis()) == True:
+			# if self.melissa.nlu.match_wake_word(phrase.hypothesis()) == True:
 				## Pasamos al nivel 2 de interpretacion
-				self.second_level_stt()
+				# self.second_level_stt()
 
 	## Método usado por Vosk
 	def vosk_callback(self, indata, frames, time, status):
@@ -94,6 +97,32 @@ class STTService:
 	def check_timeout(self, prevTimeout):
 		## Retorna el resultado de la comparativa
 		return time.time() > prevTimeout
+
+	## Método privado que se dedica a buscar el wakeWord
+	def first_level_stt(self):
+		with sd.RawInputStream(samplerate=self.VOSK_SAMPLE_RATE, blocksize=64, device=self.VOSK_INPUT_AUDIO_ID, dtype='int16', channels=1, callback=self.vosk_callback):
+			print("Waiting a Wake Word...")
+
+			rec = vosk.KaldiRecognizer(self.voskModel, self.VOSK_SAMPLE_RATE)
+
+			## Bucle infinito controlado
+			while True:
+				## Recuperamos los datos de audio
+				data = self.q.get()
+				
+				## Si detecta una frase
+				if rec.AcceptWaveform(data):
+					## Recupera el resultado
+					dataDic = json.loads(rec.Result())
+
+					## Mandamos la frase al NLU
+					self.melissa.nlu.match_wake_word(dataDic["text"])
+
+					## Salimos del bucle controlado
+					break
+
+		## Pasamos a segundo nivel de comprobación
+		self.second_level_stt()
 
 	## Método privado que se dedica a procesar texto en segundo nivel
 	def second_level_stt(self):
