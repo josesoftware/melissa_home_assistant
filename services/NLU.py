@@ -49,7 +49,7 @@ class NLUService:
 	## Método que busca comandos en un input del servicio STT
 	def match_commands(self, sttInput):
 		## Separamos primero la hipotesis del STT mediante los separadores de comando
-		commandPhrases = multi_split(sttInput, self.melissa.commandsplitters)
+		commandPhrases = multi_split(sttInput, self.melissa.commandSplitters)
 
 		## Definimos un Array de Intents de retorno
 		intentArray = [ ]
