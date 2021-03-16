@@ -6,7 +6,7 @@
 
 ## Importacion de modulos necesarios
 import os
-# from pocketsphinx import LiveSpeech, get_model_path
+from pocketsphinx import LiveSpeech, get_model_path
 import queue
 import sounddevice as sd
 import vosk
@@ -48,20 +48,6 @@ class STTService:
 
 	## Método que arranca el LiveSpeech de PocketSphinx
 	def start(self):
-		## Inicializamos el serivio Sphinx
-		# self.sphinxService = LiveSpeech(
-		# 	lm = False,
-		# 	verbose = True,
-		# 	sampling_rate = self.SPHINX_SAMPLE_RATE,
-		# 	buffer_size = self.SPHINX_BUFFER_SIZE,
-		# 	no_search = False,
-		# 	full_utt = False,
-		# 	hmm = os.path.join(get_model_path(), self.melissa.language["stt_model"]),
-		# 	#lm = os.path.join(model_path, 'es-20k.lm.bin'), ## Para detectar todo tipo de palabras en castellano
-		# 	kws = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.list'),
-		# 	dict = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.dict')
-		# )
-
 		## Definimos el modelo de lenguaje para Vosk
 		self.voskModel = vosk.Model(os.path.join(os.path.dirname(__file__), 'STT_Components/vosk_models/', self.melissa.language["stt_model"]))
 
@@ -100,25 +86,33 @@ class STTService:
 
 	## Método privado que se dedica a buscar el wakeWord
 	def first_level_stt(self):
-		with sd.RawInputStream(samplerate=self.VOSK_SAMPLE_RATE, blocksize=64, device=self.VOSK_INPUT_AUDIO_ID, dtype='int16', channels=1, callback=self.vosk_callback):
-			print("Waiting a Wake Word...")
+		## Inicializamos el serivio Sphinx
+		self.sphinxService = LiveSpeech(
+		 	lm = False,
+		 	verbose = True,
+		 	sampling_rate = self.SPHINX_SAMPLE_RATE,
+		 	buffer_size = self.SPHINX_BUFFER_SIZE,
+		 	no_search = False,
+		 	full_utt = False,
+		 	hmm = os.path.join(get_model_path(), self.melissa.language["stt_model"]),
+		 	#lm = os.path.join(model_path, 'es-20k.lm.bin'), ## Para detectar todo tipo de palabras en castellano
+		 	kws = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.list'),
+		 	dict = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.dict')
+		)
 
-			rec = vosk.KaldiRecognizer(self.voskModel, self.VOSK_SAMPLE_RATE)
+		## Recorre 
+		for phrase in self.sphinxService:
+			## Si el sistema estaba bloqueado ignorará comandos
+			if self.melissa.wakeUp == True:
+				continue
 
-			## Bucle infinito controlado
-			while True:
-				## Recuperamos los datos de audio
-				data = self.q.get()
+			## Si el NLU lo autoriza procesamos texto en nivel 2
+			if self.melissa.nlu.match_wake_word(phrase.hypothesis()) == True:
+				## Sale del bucle
+				break
 
-				## Si detecta una frase
-				if rec.AcceptWaveform(data):
-					## Recupera el resultado
-					dataDic = json.loads(rec.Result())
-
-					## Mandamos la frase al NLU
-					if self.melissa.nlu.match_wake_word(dataDic["text"]) == True:
-						## Salimos del bucle controlado
-						break
+		## Anula el reconocimiento Sphinx
+		self.sphinxService = None
 
 		## Pasamos a segundo nivel de comprobación
 		self.second_level_stt()
