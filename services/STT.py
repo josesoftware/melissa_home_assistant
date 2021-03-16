@@ -6,7 +6,7 @@
 
 ## Importacion de modulos necesarios
 import os
-from pocketsphinx import LiveSpeech, get_model_path
+# from pocketsphinx import LiveSpeech, get_model_path
 import queue
 import sounddevice as sd
 import vosk
@@ -49,18 +49,18 @@ class STTService:
 	## Método que arranca el LiveSpeech de PocketSphinx
 	def start(self):
 		## Inicializamos el serivio Sphinx
-		self.sphinxService = LiveSpeech(
-			lm = False,
-			verbose = True,
-			sampling_rate = self.SPHINX_SAMPLE_RATE,
-			buffer_size = self.SPHINX_BUFFER_SIZE,
-			no_search = False,
-			full_utt = False,
-			hmm = os.path.join(get_model_path(), self.melissa.language["stt_model"]),
-			#lm = os.path.join(model_path, 'es-20k.lm.bin'), ## Para detectar todo tipo de palabras en castellano
-			kws = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.list'),
-			dict = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.dict')
-		)
+		# self.sphinxService = LiveSpeech(
+		# 	lm = False,
+		# 	verbose = True,
+		# 	sampling_rate = self.SPHINX_SAMPLE_RATE,
+		# 	buffer_size = self.SPHINX_BUFFER_SIZE,
+		# 	no_search = False,
+		# 	full_utt = False,
+		# 	hmm = os.path.join(get_model_path(), self.melissa.language["stt_model"]),
+		# 	#lm = os.path.join(model_path, 'es-20k.lm.bin'), ## Para detectar todo tipo de palabras en castellano
+		# 	kws = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.list'),
+		# 	dict = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.dict')
+		# )
 
 		## Definimos el modelo de lenguaje para Vosk
 		self.voskModel = vosk.Model(os.path.join(os.path.dirname(__file__), 'STT_Components/vosk_models/', self.melissa.language["stt_model"]))
@@ -109,7 +109,7 @@ class STTService:
 			while True:
 				## Recuperamos los datos de audio
 				data = self.q.get()
-				
+
 				## Si detecta una frase
 				if rec.AcceptWaveform(data):
 					## Recupera el resultado
@@ -164,5 +164,8 @@ class STTService:
 				if self.check_timeout(timeout):
 					break
 
-			## Dormimos a la inteligencia artificial
-			self.melissa.sleep()
+		## Dormimos a la inteligencia artificial
+		self.melissa.sleep()
+
+		## Volvemos al primer nivel de reconicimiento de voz
+		self.first_level_stt()
