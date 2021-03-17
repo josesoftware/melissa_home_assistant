@@ -122,8 +122,8 @@ class STTService:
 
 				## Mandamos la frase al NLU
 				if self.melissa.nlu.match_wake_word(dataDic["text"]) == True:
-					## Salimos del bucle controlado
-					break
+					## Pasamos al siguiente nivel de comprension STT
+					self.second_level_stt(rec)
 
 			## Incrementamos contador
 			counter = counter + 1
@@ -147,12 +147,14 @@ class STTService:
 		#self.sphinxService = None
 
 		## Pasamos a segundo nivel de comprobación
-		self.second_level_stt(rec)
+		#self.second_level_stt(rec)
 
 	## Método privado que se dedica a procesar texto en segundo nivel
 	def second_level_stt(self, rec):
 		#with sd.RawInputStream(samplerate=self.VOSK_SAMPLE_RATE, blocksize=self.VOSK_BUFFER_SIZE, device=self.VOSK_INPUT_AUDIO_ID, dtype='int16', channels=1, callback=self.vosk_callback):
-		
+		## Primero purgamos el queue
+		self.q.queue.clear()
+
 		## Mostramos mensaje de aviso
 		print('Second level STT proccessing')
 
@@ -195,6 +197,3 @@ class STTService:
 
 		## Purgamos queue
 		self.q.queue.clear()
-
-		## Volvemos al primer nivel de reconicimiento de voz
-		self.first_level_stt(rec)
