@@ -6,7 +6,7 @@
 
 ## Importacion de modulos necesarios
 import os
-from pocketsphinx import LiveSpeech, get_model_path
+# from pocketsphinx import LiveSpeech, get_model_path
 import queue
 import sounddevice as sd
 import vosk
@@ -55,7 +55,12 @@ class STTService:
 		print("Speech recognition starts")
 
 		## Lanzamos el STT
-		self.first_level_stt()
+		with sd.RawInputStream(samplerate=self.VOSK_SAMPLE_RATE, blocksize=self.VOSK_BUFFER_SIZE, device=self.VOSK_INPUT_AUDIO_ID, dtype='int16', channels=1, callback=self.vosk_callback):
+			## Inicializamos el reconocimiento de voz
+			rec = vosk.KaldiRecognizer(self.voskModel, self.VOSK_SAMPLE_RATE)
+
+			## Iniciamos primer nivel de reconocimiento de voz
+			self.first_level_stt(rec)
 
 		## Recorremos las frases que detecta el sistema LiveSpeech
 		# for phrase in self.sphinxService:
@@ -85,80 +90,111 @@ class STTService:
 		return time.time() > prevTimeout
 
 	## Método privado que se dedica a buscar el wakeWord
-	def first_level_stt(self):
+	def first_level_stt(self, rec):
+		## Mensaje de aviso de inicio del primer nivel del STT
+		print ("Waiting a wake word...")
 		## Inicializamos el serivio Sphinx
-		self.sphinxService = LiveSpeech(
-		 	lm = False,
-		 	verbose = True,
-		 	sampling_rate = self.SPHINX_SAMPLE_RATE,
-		 	buffer_size = self.SPHINX_BUFFER_SIZE,
-		 	no_search = False,
-		 	full_utt = False,
-		 	hmm = os.path.join(get_model_path(), self.melissa.language["stt_model"]),
-		 	#lm = os.path.join(model_path, 'es-20k.lm.bin'), ## Para detectar todo tipo de palabras en castellano
-		 	kws = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.list'),
-		 	dict = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.dict')
-		)
+		#self.sphinxService = LiveSpeech(
+		# 	lm = False,
+		# 	verbose = True,
+		# 	sampling_rate = self.SPHINX_SAMPLE_RATE,
+		# 	buffer_size = self.SPHINX_BUFFER_SIZE,
+		# 	no_search = False,
+		# 	full_utt = False,
+		# 	hmm = os.path.join(get_model_path(), self.melissa.language["stt_model"]),
+		# 	#lm = os.path.join(model_path, 'es-20k.lm.bin'), ## Para detectar todo tipo de palabras en castellano
+		# 	kws = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.list'),
+		# 	dict = os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.dict')
+		#)
 
-		## Recorre 
-		for phrase in self.sphinxService:
-			## Si el sistema estaba bloqueado ignorará comandos
-			if self.melissa.wakeUp == True:
-				continue
+		## Definimos un contador
+		counter = 0
 
-			## Si el NLU lo autoriza procesamos texto en nivel 2
-			if self.melissa.nlu.match_wake_word(phrase.hypothesis()) == True:
-				## Sale del bucle
-				break
+		## Bucle infinito controlado
+		while True:
+			## Recuperamos los datos de audio
+			data = self.q.get()
 
-		## Anula el reconocimiento Sphinx
-		self.sphinxService = None
+			## Si detecta una frase
+			if rec.AcceptWaveform(data):
+				## Recupera el resultado
+				dataDic = json.loads(rec.Result())
 
-		## Pasamos a segundo nivel de comprobación
-		self.second_level_stt()
-
-	## Método privado que se dedica a procesar texto en segundo nivel
-	def second_level_stt(self):
-		with sd.RawInputStream(samplerate=self.VOSK_SAMPLE_RATE, blocksize=self.VOSK_BUFFER_SIZE, device=self.VOSK_INPUT_AUDIO_ID, dtype='int16', channels=1, callback=self.vosk_callback):
-			## Mostramos mensaje de aviso
-			print('Second level STT proccessing')
-
-			## Inicializamos el reconocimiento de voz en segundo nivel
-			rec = vosk.KaldiRecognizer(self.voskModel, self.VOSK_SAMPLE_RATE)
-
-			## Inicializamos un timeout
-			timeout = self.set_timeout()
-
-			## Bucle infinito controlado
-			while True:
-				## Recuperamos los datos de audio
-				data = self.q.get()
-
-				## Si detecta una frase
-				if rec.AcceptWaveform(data):
-					## Recupera el resultado
-					dataDic = json.loads(rec.Result())
-
-					## Mandamos la frase al NLU
-					self.melissa.nlu.from_stt(dataDic["text"])
-
+				## Mandamos la frase al NLU
+				if self.melissa.nlu.match_wake_word(dataDic["text"]) == True:
 					## Salimos del bucle controlado
 					break
-				else:
-					## Recupera el resultado
-					dataWord = json.loads(rec.PartialResult())
 
-					## Si no se ha detectado una frase entera pero detectamos palabras
-					if dataWord["partial"] != "":
-						## Reseteamos el timeout si se detectan palabras
-						self.set_timeout()
-				
-				## Si se excede el timeout salimos del bucle controlado
-				if self.check_timeout(timeout):
-					break
+			## Incrementamos contador
+			counter = counter + 1
+
+			## Si el contador excede el maximo de ciclos purgamos queue
+			if counter >= 15:
+				self.q.queue.clear()
+
+		## Recorre 
+		#for phrase in self.sphinxService:
+		#	## Si el sistema estaba bloqueado ignorará comandos
+		#	if self.melissa.wakeUp == True:
+		#		continue
+
+		#	## Si el NLU lo autoriza procesamos texto en nivel 2
+		#	if self.melissa.nlu.match_wake_word(phrase.hypothesis()) == True:
+		#		## Sale del bucle
+		#		break
+
+		## Anula el reconocimiento Sphinx
+		#self.sphinxService = None
+
+		## Pasamos a segundo nivel de comprobación
+		self.second_level_stt(rec)
+
+	## Método privado que se dedica a procesar texto en segundo nivel
+	def second_level_stt(self, rec):
+		#with sd.RawInputStream(samplerate=self.VOSK_SAMPLE_RATE, blocksize=self.VOSK_BUFFER_SIZE, device=self.VOSK_INPUT_AUDIO_ID, dtype='int16', channels=1, callback=self.vosk_callback):
+		
+		## Mostramos mensaje de aviso
+		print('Second level STT proccessing')
+
+		## Inicializamos el reconocimiento de voz en segundo nivel
+		#rec = vosk.KaldiRecognizer(self.voskModel, self.VOSK_SAMPLE_RATE)
+
+		## Inicializamos un timeout
+		timeout = self.set_timeout()
+
+		## Bucle infinito controlado
+		while True:
+			## Recuperamos los datos de audio
+			data = self.q.get()
+
+			## Si detecta una frase
+			if rec.AcceptWaveform(data):
+				## Recupera el resultado
+				dataDic = json.loads(rec.Result())
+
+				## Mandamos la frase al NLU
+				self.melissa.nlu.from_stt(dataDic["text"])
+
+				## Salimos del bucle controlado
+				break
+			else:
+				## Recupera el resultado
+				dataWord = json.loads(rec.PartialResult())
+
+				## Si no se ha detectado una frase entera pero detectamos palabras
+				if dataWord["partial"] != "":
+					## Reseteamos el timeout si se detectan palabras
+					self.set_timeout()
+			
+			## Si se excede el timeout salimos del bucle controlado
+			if self.check_timeout(timeout):
+				break
 
 		## Dormimos a la inteligencia artificial
 		self.melissa.sleep()
 
+		## Purgamos queue
+		self.q.queue.clear()
+
 		## Volvemos al primer nivel de reconicimiento de voz
-		self.first_level_stt()
+		self.first_level_stt(rec)
