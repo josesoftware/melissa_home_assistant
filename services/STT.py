@@ -152,9 +152,7 @@ class STTService:
 	## Método privado que se dedica a procesar texto en segundo nivel
 	def second_level_stt(self, rec):
 		#with sd.RawInputStream(samplerate=self.VOSK_SAMPLE_RATE, blocksize=self.VOSK_BUFFER_SIZE, device=self.VOSK_INPUT_AUDIO_ID, dtype='int16', channels=1, callback=self.vosk_callback):
-		## Primero purgamos el queue
-		self.q.queue.clear()
-
+		
 		## Mostramos mensaje de aviso
 		print('Second level STT proccessing')
 
@@ -194,6 +192,3 @@ class STTService:
 
 		## Dormimos a la inteligencia artificial
 		self.melissa.sleep()
-
-		## Purgamos queue
-		self.q.queue.clear()
