@@ -93,6 +93,7 @@ class STTService:
 	def first_level_stt(self, rec):
 		## Mensaje de aviso de inicio del primer nivel del STT
 		print ("Waiting a wake word...")
+		
 		## Inicializamos el serivio Sphinx
 		#self.sphinxService = LiveSpeech(
 		# 	lm = False,
@@ -129,7 +130,7 @@ class STTService:
 			counter = counter + 1
 
 			## Si el contador excede el maximo de ciclos purgamos queue
-			if counter >= 30:
+			if counter >= 20:
 				self.q.queue.clear()
 
 		## Recorre 
@@ -192,3 +193,6 @@ class STTService:
 
 		## Dormimos a la inteligencia artificial
 		self.melissa.sleep()
+		
+		## Mensaje de aviso de inicio del primer nivel del STT
+		print ("Waiting a wake word...")
