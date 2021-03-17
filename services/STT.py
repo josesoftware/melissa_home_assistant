@@ -129,7 +129,7 @@ class STTService:
 			counter = counter + 1
 
 			## Si el contador excede el maximo de ciclos purgamos queue
-			if counter >= 15:
+			if counter >= 30:
 				self.q.queue.clear()
 
 		## Recorre 
@@ -152,7 +152,7 @@ class STTService:
 	## Método privado que se dedica a procesar texto en segundo nivel
 	def second_level_stt(self, rec):
 		#with sd.RawInputStream(samplerate=self.VOSK_SAMPLE_RATE, blocksize=self.VOSK_BUFFER_SIZE, device=self.VOSK_INPUT_AUDIO_ID, dtype='int16', channels=1, callback=self.vosk_callback):
-		
+
 		## Mostramos mensaje de aviso
 		print('Second level STT proccessing')
 
