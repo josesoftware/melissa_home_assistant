@@ -100,6 +100,8 @@ class NLUService:
 			### Determinamos el tipo de intent
 			## Si el intent es de tipo exec
 			if _intent["intent"] == "exec":
+				continue
+			else:
 				####################################################################
 				##### Nivel 5 de comprobación
 				### Basándonos en el tipo de intent, identificamos los RAW commands
@@ -174,11 +176,8 @@ class NLUService:
 	def match_device(self, phrase):
 		## Recorremos la lista de dispositivos
 		for device in self.melissa.devices:
-			print (device)
 			## Si se encuentra el dispositivo en la frase
 			if device in phrase:
-				print ("Match")
-				print (device)
 				## Retornamos el nombre del dispositivo
 				return device
 
