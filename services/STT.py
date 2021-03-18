@@ -7,13 +7,11 @@
 ## Importacion de modulos necesarios
 import sys, os, time, json
 # from pocketsphinx import LiveSpeech, get_model_path
-## Usado por Sphinx
+## Sphinx
 from pocketsphinx.pocketsphinx import *
 from pocketsphinx import get_model_path
 from sphinxbase.sphinxbase import *
-## Usado por Vosk
-#import queue
-#import sounddevice as sd
+## Vosk
 import vosk
 ## Para interactuar con el audio
 import pyaudio
@@ -90,22 +88,6 @@ class STTService:
 				## Si el servicio estaba despierto procesa el audio en segundo nivel
 				self.second_level_stt(data)
 
-	## Método usado por Vosk
-	#def vosk_callback(self, indata, frames, time, status):
-	#	"""This is called (from a separate thread) for each audio block."""
-	#	if status:
-	#		print(status, file=sys.stderr)
-	#	self.q.put(bytes(indata))
-
-	## Método privado que fija un timeout
-	#def set_timeout(self):
-	#	return time.time() + self.VOSK_TIMEOUT
-
-	## Método privado que chequea un timeout
-	#def check_timeout(self, prevTimeout):
-		## Retorna el resultado de la comparativa
-	#	return time.time() > prevTimeout
-
 	## Método privado que se dedica a buscar el wakeWord
 	def first_level_stt(self, rec):
 		## Decodifica el audio
@@ -115,6 +97,9 @@ class STTService:
 		if self.sphinxService.hyp() != None:
 			## Despierta el servicio Melissa
 			self.melissa.wake()
+
+			## Mensaje debug
+			print ("Second level of recognition starting")
 
 			## Reinicia el decoder
 			self.sphinxService.end_utt()
