@@ -1,7 +1,7 @@
 ###############################################################
 ## Componente que se dedica a comprender un lenguaje natural ##
 ##-----------------------------------------------------------##
-## Convierte textos de un lenguaje natural en Intents        ##
+## Convierte textos de un lenguaje natural en intents        ##
 ###############################################################
 
 ## Importamos metodos de la libreria de utilidades
@@ -51,7 +51,7 @@ class NLUService:
 		## Separamos primero la hipotesis del STT mediante los separadores de comando
 		commandPhrases = multi_split(sttInput, self.melissa.commandSplitters)
 
-		## Definimos un Array de Intents de retorno
+		## Definimos un Array de intents de retorno
 		intentArray = [ ]
 
 		## Recorremos la lista de frases obtenida tras aplicar separadores
@@ -142,7 +142,7 @@ class NLUService:
 		ReturnParams = { }
 
 		## Recorremos cada uno de los parametros del intet
-		for parameter in self.melissa.devices[device].Intents[intent]["parameters"]:
+		for parameter in self.melissa.devices[device].intents[intent]["parameters"]:
 			## Si el parametro es "address" pasamos de cilco
 			if parameter == "address":
 				continue
@@ -161,7 +161,7 @@ class NLUService:
 	## Método que busca un intent de dispositivo en una frase
 	def match_device_intent(self, device, phrase):
 		## Recorremos la lista de dispositivos
-		for intent in self.melissa.devices[device].Intents:
+		for intent in self.melissa.devices[device].intents:
 			## Si se encuentra el intent dispositivo en la frase
 			if TRANSLATIONS.TRANSLATION_DEVICE_COMMANDS[intent] in phrase:
 				## Retornamos el intent a ejecutar
