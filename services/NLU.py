@@ -176,6 +176,7 @@ class NLUService:
 		for device in self.melissa.devices:
 			## Si se encuentra el dispositivo en la frase
 			if device in phrase:
+				print (device)
 				## Retornamos el nombre del dispositivo
 				return device
 
