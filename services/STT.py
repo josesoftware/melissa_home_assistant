@@ -122,9 +122,6 @@ class STTService:
 
 	## Método privado que se dedica a procesar texto en segundo nivel
 	def second_level_stt(self, rec):
-		## Mostramos mensaje de aviso
-		print('Second level STT proccessing')
-
 		## Si detecta una frase
 		if self.voskService.AcceptWaveform(rec):
 			## Recupera el resultado
