@@ -133,5 +133,5 @@ class STTService:
 			## Lo manda al NLU
 			self.melissa.nlu.from_stt(detectedWords["text"])
 
-		## Dormimos a la inteligencia artificial
-		self.melissa.sleep()
+			## Dormimos a la inteligencia artificial
+			self.melissa.sleep()
