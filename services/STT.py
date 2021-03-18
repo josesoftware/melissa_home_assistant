@@ -12,7 +12,7 @@ from pocketsphinx.pocketsphinx import *
 from pocketsphinx import get_model_path
 from sphinxbase.sphinxbase import *
 ## Usado por Vosk
-import queue
+#import queue
 #import sounddevice as sd
 import vosk
 ## Para interactuar con el audio
@@ -89,17 +89,6 @@ class STTService:
 			else:
 				## Si el servicio estaba despierto procesa el audio en segundo nivel
 				self.second_level_stt(data)
-
-		## Recorremos las frases que detecta el sistema LiveSpeech
-		# for phrase in self.sphinxService:
-			## Si el sistema estaba bloqueado ignorará comandos
-			# if self.melissa.wakeUp == True:
-				# continue
-
-			## Si el NLU lo autoriza procesamos texto en nivel 2
-			# if self.melissa.nlu.match_wake_word(phrase.hypothesis()) == True:
-				## Pasamos al nivel 2 de interpretacion
-				# self.second_level_stt()
 
 	## Método usado por Vosk
 	#def vosk_callback(self, indata, frames, time, status):
