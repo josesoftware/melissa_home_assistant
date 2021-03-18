@@ -174,8 +174,10 @@ class NLUService:
 	def match_device(self, phrase):
 		## Recorremos la lista de dispositivos
 		for device in self.melissa.devices:
+			print (device)
 			## Si se encuentra el dispositivo en la frase
 			if device in phrase:
+				print ("Match")
 				print (device)
 				## Retornamos el nombre del dispositivo
 				return device
