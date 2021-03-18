@@ -31,7 +31,7 @@ class MelissaService:
 		"descansa": { "intent": "abort", "parameters": { } },
 		"que eres": { "intent": "say", "parameters": { "message": "Soy la caña chaval", "keywords": [ ] } },
 		"enciende": { "intent": "exec", "parameters": { } },
-		"cambia color": { "intent": "exec", "parameters": { } }
+		"device": { "device": "", "intent": "", "parameters": { } }
 	}
 	## Lista de ordnenes
 	commandSplitters = [

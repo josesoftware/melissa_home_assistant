@@ -64,43 +64,43 @@ class NLUService:
 
 			####################################################################
 			##### Nivel 1 de comprobación
-			## Recorremos cada una de las ordenes
+			## Recorremos cada una de las ordenes internas de melissa
 			for command in self.melissa.commands:
 				## Si el comando está en la frase recibida del STT
 				if command in phrase:
 					## Marcamos la orden como posible
 					possibleCommands.append(command)   
 
-			## Si no hay resultados pasamos de cilco
-			if len(possibleCommands) == 0:
-				## Pasamos de ciclo
-				continue
+			
 
-			####################################################################
-			##### Nivel 2 de comprobación
-			## Comprueba si existe más de una orden a procesar en la misma frase
-			if len(possibleCommands) > 1:
-				## Retorna Intent vacio
-				return intentArray
+			## Si es una orden interna de melissa 
+			if len(possibleCommands) != 0:
+				####################################################################
+				##### Nivel 2 de comprobación
+				## Comprueba si existe más de una orden a procesar en la misma frase
+				if len(possibleCommands) > 1:
+					## Retorna Intent vacio
+					return intentArray
 
-			####################################################################
-			##### Nivel 3 de comprobación
-			## Comprobamos si es un comando simple 
-			## Recorremos cada comando
-			## Comprobamos si el comando tiene la misma cantidad de palabras que la frase
-			if count_words(sttInput) == count_words(possibleCommands[0]):
-				## Retornamos directamente el comando sin parametrizar
-				return self.melissa.commands[possibleCommands[0]]
-			else:
-				## Componemos un intent basandonos en la plantilla
-				_intent = self.melissa.commands[possibleCommands[0]]
+				####################################################################
+				##### Nivel 3 de comprobación
+				## Comprobamos si es un comando simple 
+				## Recorremos cada comando
+				## Comprobamos si el comando tiene la misma cantidad de palabras que la frase
+				if count_words(sttInput) == count_words(possibleCommands[0]):
+					## Retornamos directamente el comando sin parametrizar
+					return self.melissa.commands[possibleCommands[0]]
+				else:
+					## Componemos un intent basandonos en la plantilla
+					_intent = self.melissa.commands[possibleCommands[0]]
 
-			####################################################################
-			##### Nivel 4 de comprobación
-			### Determinamos el tipo de intent
-			## Si el intent es de tipo exec
-			if _intent["intent"] == "exec":
-				continue
+				####################################################################
+				##### Nivel 4 de comprobación
+				### Determinamos el tipo de intent
+				## Si el intent es de tipo exec
+				if _intent["intent"] == "exec":
+					continue
+			## Si no es una orden interna de melissa
 			else:
 				####################################################################
 				##### Nivel 5 de comprobación
@@ -112,9 +112,12 @@ class NLUService:
 				if targetDevice is None:
 					## Pasamos de ciclo
 					continue
+
+				## Añadimos el header del intent
+				_intent = self.melissa.commands["device"]
 					
 				## Añadimos el dispositivo al intent
-				_intent["parameters"]["device"] = targetDevice
+				_intent["device"] = targetDevice
 
 				## Ordenamos hacer match de intent del dispositivo
 				targetDeviceIntent = self.match_device_intent(targetDevice, phrase)
@@ -125,15 +128,13 @@ class NLUService:
 					continue
 
 				## Añadimos el intent del dispositivo al intent general
-				_intent["parameters"]["intent"] = targetDeviceIntent
+				_intent["intent"] = targetDeviceIntent
 
 				## Buscamos parametros "RAW" para llevar a cabo el intent
-				_intent["parameters"]["parameters"] = self.match_intent_params(targetDevice, targetDeviceIntent, phrase)
+				_intent["parameters"] = self.match_intent_params(targetDevice, targetDeviceIntent, phrase)
 
-			## Añadimos el intent al array de retorno
-			intentArray.append(_intent)
-
-
+				## Añadimos el intent al array de retorno
+				intentArray.append(_intent)
 
 		##### Exportación de resultados
 		return intentArray
