@@ -10,6 +10,39 @@ TRANSLATION_DEVICE_COMMANDS = {
 	"intensity set": "cambia intensidad"
 }
 
+## Definimos Preposiciones linguisticas
+TRANSLATION_PREPOSITIONS = {
+	" a ",
+	" ante ",
+	" bajo ",
+	" cabe ",
+	" con ",
+	" contra ",
+	" de ",
+	" desde ",
+	" en ",
+	" entre ",
+	" hacia ",
+	" hasta ",
+	" para ",
+	" por ",
+	" según ",
+	" sin ",
+	" sobre ",
+	" tras ",
+	" durante ",
+	" mediante "
+}
+
+## Definimos artúlos linguísticos
+TRANSLATION_ARTICLES = {
+	" el ",
+	" la ",
+	" lo ",
+	" los ",
+	" las "
+}
+
 ## Diccionario de traducción de colores
 TRANSLATION_COLOR = {
 	"morado": "PURPLE",

@@ -163,6 +163,9 @@ class NLUService:
 
 	## Método que busca un intent de dispositivo en una frase
 	def match_device_intent(self, device, phrase):
+		## Eliminamos Articulos y preposicones de la frase
+		phrase = self.clear_string(phrase, True, True)
+
 		## Recorremos la lista de dispositivos
 		for intent in self.melissa.devices[device].intents:
 			## Si se encuentra el intent dispositivo en la frase
@@ -184,3 +187,20 @@ class NLUService:
 
 		## Retornamos el objeto
 		return None
+
+	## Método que limpia datos irrelevantes de un string
+	def clear_string(self, str, clearArticles, clearPrepositions):
+		# Si se desean limpiar los articulos
+		if clearArticles:
+			## Recorremos la lista de articulos
+			for article in TRANSLATIONS.TRANSLATION_ARTICLES:
+				str = str.replace(article, " ")
+
+		# Si se desean limpiar las preposiciones
+		if clearPrepositions:
+			## Recorremos la lista de articulos
+			for preposition in TRANSLATIONS.TRANSLATION_PREPOSITIONS:
+				str = str.replace(preposition, " ")
+
+		## Retornamos el string reparado
+		return str
