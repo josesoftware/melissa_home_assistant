@@ -8,7 +8,13 @@ TRANSLATION_THING_COMMANDS = {
 	"turn off": "apaga",
 	"color set": "cambia color",
 	"intensity set": "cambia intensidad",
-	"ambience": "ambiente"
+	"ambience": "ambiente",
+	"attenuate": "baja intensidad",
+	"increase": "sube intensidad",
+	"attenuate": "atenua",
+	"increase": "aumenta",
+	"maximum": "máximo",
+	"minimum": "mínimo"
 }
 
 ## Definimos Preposiciones linguisticas
