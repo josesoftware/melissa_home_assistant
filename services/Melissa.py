@@ -135,7 +135,7 @@ class MelissaService:
 				## Recupera el dispositivo
 				device = self.things["devices"][intent["device"]]
 				## Ejecuta el intent en el propio dispositivo
-				print ("Intent result: " + str(device.do_intent(intent)))
+				print ("Intent result: " + str(device.do_intent(intent, communication_module)))
 				## Sale del método
 				return
 

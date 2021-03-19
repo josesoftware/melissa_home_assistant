@@ -28,5 +28,5 @@ class Switch(Parent):
 		}
   
 	## Método que traduce un Intent en un request al dispositivo
-	def do_intent(self, intent):
+	def do_intent(self, intent, communicationModule):
 		pass
