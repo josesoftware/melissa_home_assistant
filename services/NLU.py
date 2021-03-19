@@ -41,7 +41,7 @@ class NLUService:
 		## DEBUG - Mostramos string
 		print(sttInput)
 		## Retorna el intent detectado
-		return self.match_intents(sttInput)
+		self.melissa.from_nlu(self.match_intents(sttInput))
 
 	## Método que determina con que tipo de thing se desea tratar
 	def match_thing(self, intentPhrase):
