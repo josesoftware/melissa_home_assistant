@@ -134,11 +134,8 @@ class MelissaService:
 			if "device" in intent.keys():
 				## Recupera el dispositivo
 				device = self.things["devices"][intent["device"]]
-				## Recupera el intent del dispositivo
-				_intent = device.intents[intent["intent"]]
-				## Recorre los parámetros del intent
-				for parameter in _intent["parameters"]:
-					print (parameter)
+				## Ejecuta el intent en el propio dispositivo
+				print ("Intent result: " + str(device.do_intent(intent)))
 				## Sale del método
 				return
 

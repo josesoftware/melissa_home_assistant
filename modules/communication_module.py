@@ -12,13 +12,11 @@ class CommunicationModule:
 
 	############## Métodos que tratan con dispositivos
 	## Método que lleva a cabo un request de tipo GET
-	def device_get_request(self, device, intent):
+	def device_get_request(self, device, request):
 		## Primero comprueba que hay conectividad con el dispositivo
 		if self.device_check_ping(device):
-			## Inicializamos el request basandonos en el 'intent'
-			request = device.intents[intent]
 			## Realizas el request
-			return requests.get(request["request"].format(**request["parameters"]))
+			return requests.get(request)
 
 		## Retorna nulo si no se ha podido llevar a cabo
 		return None

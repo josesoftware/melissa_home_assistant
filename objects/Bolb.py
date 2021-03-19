@@ -33,21 +33,19 @@ class Bolb(Parent):
 		}
 
 	## Método que traduce un Intent en un request al dispositivo
-	def do_intent(self, intent):
+	def do_intent(self, intent, communicationModule):
 		## Controlamos excepciones
 		try:
 			## Inicializamos el request basandonos en el 'intent'
 			request = self.intents[intent["intent"]]
 
-
 			#### MODIFICACIONES DE ESTADO
 			## Si se pretender apagar el dispositivo
-			if intent["action"] == 'turn off':
+			if intent["intent"] == 'turn off':
 				self.status = 'off'
 			## Si se pretender encender el dispositivo
-			if intent["action"] == 'turn on':
+			if intent["intent"] == 'turn on':
 				self.status = 'on'
-
 
 			#### VALORES CRUDOS ( RAW )
 			## Recorremos los parametros del request
@@ -67,7 +65,7 @@ class Bolb(Parent):
 					request["parameters"][parameter] = Clamp(int(intent["parameters"][parameter]), 0, 100)
 
 			## Enviamos una peticion GET
-			return self.get_request(request["request"].format(**request["parameters"]))
+			return communicationModule.get_request(self, request["request"].format(**request["parameters"]))
 		except:
 			## Retornamos error
 			return "Intent not defined for this device"
