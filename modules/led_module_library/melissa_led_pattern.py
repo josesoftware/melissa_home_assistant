@@ -134,7 +134,7 @@ class MelissaLedPattern(object):
         pixels = [0, 0, 0, 0] * self.pixels_number
         
         ## Aplicamos animacion fade
-        for o in range(10):
+        for o in range(100):
             ## Recorremos cada uno de los led
             for i in range(self.pixels_number):
                 ## Calculamos el wheel
@@ -147,9 +147,9 @@ class MelissaLedPattern(object):
                 #    pixels[i * 4 + 3] = wheel[2] * 0.5
                 #else:
                 ## Fijamos el color RGB
-                pixels[i * 4 + 1] = wheel[0] * (0.1 * o)
-                pixels[i * 4 + 2] = wheel[1] * (0.1 * o)
-                pixels[i * 4 + 3] = wheel[2] * (0.1 * o)
+                pixels[i * 4 + 1] = wheel[0] * (0.01 * o)
+                pixels[i * 4 + 2] = wheel[1] * (0.01 * o)
+                pixels[i * 4 + 3] = wheel[2] * (0.01 * o)
             
             ## Duerme 0,1s
             time.sleep(0.1)
