@@ -221,10 +221,12 @@ class NLUService:
 
 		## Recorremos la lista de ambientes
 		for intent in self.melissa.things["ambiences"][ambience].intents:
-			## Si se encuentra el intent dispositivo en la frase
-			if TRANSLATIONS.TRANSLATION_THING_COMMANDS[intent] in phrase:
-				## Retornamos el intent a ejecutar
-				return intent
+			## Recorre cada uno de los sinonimos de traduccion
+			for synonymous in TRANSLATIONS.TRANSLATION_THING_COMMANDS[intent]:
+				## Si se encuentra el intent en la frase
+				if synonymous in phrase:
+					## Retornamos el intent a ejecutar
+					return intent
 
 		## Retornamos el objeto
 		return None
@@ -249,10 +251,12 @@ class NLUService:
 
 		## Recorremos la lista de dispositivos
 		for intent in self.melissa.things["devices"][device].intents:
-			## Si se encuentra el intent dispositivo en la frase
-			if TRANSLATIONS.TRANSLATION_THING_COMMANDS[intent] in phrase:
-				## Retornamos el intent a ejecutar
-				return intent
+			## Recorre cada uno de los sinonimos de traduccion
+			for synonymous in TRANSLATIONS.TRANSLATION_THING_COMMANDS[intent]:
+				## Si se encuentra el intent en la frase
+				if synonymous in phrase:
+					## Retornamos el intent a ejecutar
+					return intent
 
 		## Retornamos el objeto
 		return None

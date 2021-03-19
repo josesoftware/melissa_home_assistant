@@ -4,17 +4,15 @@
 
 ## Diccionario de traducción de comandos de dispositivos
 TRANSLATION_THING_COMMANDS = {
-	"turn on": "enciende",
-	"turn off": "apaga",
-	"color set": "cambia color",
-	"intensity set": "cambia intensidad",
-	"ambience": "ambiente",
-	"attenuate": "baja intensidad",
-	"increase": "sube intensidad",
-	"attenuate": "atenua",
-	"increase": "aumenta",
-	"maximum": "máximo",
-	"minimum": "mínimo"
+	"turn on": ["enciende"],
+	"turn off": ["apaga"],
+	"color set": ["cambia color", "cambiar color"],
+	"intensity set": ["cambia intensidad", "cambiar intensidad"],
+	"ambience": ["ambiente"],
+	"attenuate": ["baja intensidad", "atenúa"],
+	"increase": ["sube intensidad", "aumenta"],
+	"maximum": ["máximo"],
+	"minimum": ["mínimo"]
 }
 
 ## Definimos Preposiciones linguisticas
