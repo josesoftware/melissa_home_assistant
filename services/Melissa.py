@@ -127,21 +127,20 @@ class MelissaService:
 		self.stt.start()
 
 	## Método que recibe datos del servicio NLU
-	def from_nlu(self, intent):
-		## Recupera el intent como un diccionario
-		jsonIntent = json.loads(intent)
+	def from_nlu(self, intents):
+		## Recurre cada uno de los intents
+		for intent in intents:
+			## Si hay un dispositivo en el intent
+			if "device" in intent.keys():
+				## Recupera el dispositivo
+				device = self.things["devices"][intent["device"]]
+				## Recupera el intent del dispositivo
+				_intent = device.intents[intent["intent"]]
+				## Recorre los parámetros del intent
+				for parameter in _intent["parameters"]:
+					print (parameter)
+				## Sale del método
+				return
 
-		## Si hay un dispositivo en el intent
-		if "device" in jsonIntent.keys():
-			## Recupera el dispositivo
-			device = self.things["devices"][jsonIntent["device"]]
-			## Recupera el intent del dispositivo
-			intent = device.intents[jsonIntent["intent"]]
-			## Recorre los parámetros del intent
-			for parameter in intent["parameters"]:
-				print (parameter)
-			## Sale del método
-			return
-
-		## DEBUG - Mostramos Intent
-		print(json.dumps(intent)) 
+			## DEBUG - Mostramos Intent
+			print(json.dumps(intent))
