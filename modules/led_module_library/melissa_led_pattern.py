@@ -125,7 +125,7 @@ class MelissaLedPattern(object):
         ## Mostramos color
         self.show(pixels)
 
-
+    ## Animacion de despertar
     def wakeup(self, direction=0):
         ## Determinamos el led mas proximo a la voz
         #position = int((direction + 15) / (360 / self.pixels_number)) % self.pixels_number
@@ -157,6 +157,7 @@ class MelissaLedPattern(object):
             ## Mostramos color
             self.show(pixels)
 
+    ## Animacion de escuchar
     def listen(self):
         ## Seteamos el valor inicial
         pixels = [0, 0, 0, 0] * self.pixels_number
@@ -174,6 +175,7 @@ class MelissaLedPattern(object):
         ## Mostramos color
         self.show(pixels)
 
+    ## Animacion de pensar
     def think(self):
         ## Tiempo de espera de la animacion
         wait_ms = 20
@@ -205,6 +207,7 @@ class MelissaLedPattern(object):
             ## Incrementamos el contador    
             j += 1
 
+    ## Animacion de hablar
     def speak(self):
         ## Tiempo de espera de la animacion
         wait_ms=10
@@ -237,5 +240,6 @@ class MelissaLedPattern(object):
             ## Incrementamos el contador    
             j += 1
 
+    ## Animacion para apagar leds
     def off(self):
         self.show([0] * 4 * 12)

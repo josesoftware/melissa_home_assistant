@@ -14,6 +14,7 @@ class IoTDevice(Thing):
 	address = ipaddress.ip_address('255.255.255.255')
 	macAddress = 'FF:FF:FF:FF:FF'
 	alias = 'Device'
+	isAlive = False
 
 	## Constructor
 	def __init__(self, address, mac, alias):

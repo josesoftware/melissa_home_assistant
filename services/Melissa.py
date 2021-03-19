@@ -46,6 +46,8 @@ class MelissaService:
 	module_db = None
 	## Instancia del modulo audio
 	module_audio = None
+	## Instancia del modulo de comunicacion
+	communication_module = None
 
 
 	##### Instancia de servicios
@@ -54,7 +56,7 @@ class MelissaService:
 	nlu = None
 
 	## Constructor
-	def __init__(self, language, led_module, db_module, audio_module):
+	def __init__(self, language, led_module, db_module, audio_module, communication_module):
 		############# Instancia de los modulos
 		## Definimos el lenguaje de trabajo
 		self.language = language
@@ -64,6 +66,8 @@ class MelissaService:
 		self.module_db = db_module
 		## Instanciamos el módulo de audio
 		self.module_audio = audio_module
+		## Instanciamos el módulo de comunicaciones
+		self.communication_module = communication_module
 
 		############# Instancia del resto de servicios
 		## Instanciamos el servicio TTS
