@@ -151,8 +151,8 @@ class MelissaLedPattern(object):
                 pixels[i * 4 + 2] = wheel[1] * (0.01 * o)
                 pixels[i * 4 + 3] = wheel[2] * (0.01 * o)
             
-            ## Duerme 0,1s
-            time.sleep(0.1)
+            ## Duerme 0,01s
+            time.sleep(0.01)
 
             ## Mostramos color
             self.show(pixels)
