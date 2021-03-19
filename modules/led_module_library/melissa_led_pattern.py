@@ -128,29 +128,34 @@ class MelissaLedPattern(object):
 
     def wakeup(self, direction=0):
         ## Determinamos el led mas proximo a la voz
-        position = int((direction + 15) / (360 / self.pixels_number)) % self.pixels_number
+        #position = int((direction + 15) / (360 / self.pixels_number)) % self.pixels_number
         
         ## Seteamos el valor inicial
         pixels = [0, 0, 0, 0] * self.pixels_number
         
-        ## Recorremos cada uno de los led
-        for i in range(self.pixels_number):
-            ## Calculamos el wheel
-            wheel = self.wheel(int(i * 256 / self.pixels_number) & 255)
+        ## Aplicamos animacion fade
+        for o in range(10):
+            ## Recorremos cada uno de los led
+            for i in range(self.pixels_number):
+                ## Calculamos el wheel
+                wheel = self.wheel(int(i * 256 / self.pixels_number) & 255)
             
-            if i != position:
+                #if i != position:
+                #    ## Fijamos el color RGB
+                #    pixels[i * 4 + 1] = wheel[0] * 0.5
+                #    pixels[i * 4 + 2] = wheel[1] * 0.5
+                #    pixels[i * 4 + 3] = wheel[2] * 0.5
+                #else:
                 ## Fijamos el color RGB
-                pixels[i * 4 + 1] = wheel[0] * 0.5
-                pixels[i * 4 + 2] = wheel[1] * 0.5
-                pixels[i * 4 + 3] = wheel[2] * 0.5
-            else:
-                ## Fijamos el color RGB
-                pixels[i * 4 + 1] = wheel[0]
-                pixels[i * 4 + 2] = wheel[1]
-                pixels[i * 4 + 3] = wheel[2]
+                pixels[i * 4 + 1] = wheel[0] * (0.1 * o)
+                pixels[i * 4 + 2] = wheel[1] * (0.1 * o)
+                pixels[i * 4 + 3] = wheel[2] * (0.1 * o)
             
-        ## Mostramos color
-        self.show(pixels)
+            ## Duerme 0,1s
+            time.sleep(0.1)
+
+            ## Mostramos color
+            self.show(pixels)
 
     def listen(self):
         ## Seteamos el valor inicial

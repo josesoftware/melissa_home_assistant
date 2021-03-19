@@ -40,8 +40,8 @@ class NLUService:
 	def from_stt(self, sttInput):
 		## DEBUG - Mostramos string
 		print(sttInput)
-		## DEBUG - Mostramos Intent
-		print(json.dumps(self.match_commands(sttInput))) 
+		## Retorna el intent detectado
+		return self.match_intents(sttInput)
 
 	## Método que determina con que tipo de thing se desea tratar
 	def match_thing(self, intentPhrase):
@@ -72,7 +72,7 @@ class NLUService:
 		return None
 
 	## Método que busca comandos en un input del servicio STT
-	def match_commands(self, sttInput):
+	def match_intents(self, sttInput):
 		## Separamos primero la hipotesis del STT mediante los separadores de comando
 		commandPhrases = multi_split(sttInput, self.COMMAND_SPLITTER)
 

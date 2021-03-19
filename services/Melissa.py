@@ -2,6 +2,8 @@
 ## Objeto que representa el servicio de IoT 				   ##
 #################################################################
 
+## Importacion de modulos
+import json
 
 ## Importamos servicios necesarios
 from services.TTS import TTSService
@@ -122,4 +124,5 @@ class MelissaService:
 
 	## Método que recibe datos del servicio NLU
 	def from_nlu(self, intent):
-		pass
+		## DEBUG - Mostramos Intent
+		print(json.dumps(intent)) 
