@@ -11,6 +11,7 @@ from services.NLU import NLUService
 ## Importamos objetos
 from objects.Switch import Switch
 from objects.Bolb import Bolb
+from objects.Ambience import Ambience
 
 
 ## Definición de la clase
@@ -24,20 +25,13 @@ class MelissaService:
 	language = None
 
 	#### Atributos dinamicos
-	## Lista de dispositivos
-	devices = { }
-	## Lista de ordnenes
-	commands = { 
-		"descansa": { "intent": "abort", "parameters": { } },
-		"que eres": { "intent": "say", "parameters": { "message": "Soy la caña chaval", "keywords": [ ] } },
-		"enciende": { "intent": "exec", "parameters": { } },
-		"device": { "device": "", "intent": "", "parameters": { } }
+	## Lista de cosas ( Things )
+	things = { 
+		"commands": {},
+		"ambiences": {},
+		"devices": {}
 	}
-	## Lista de ordnenes
-	commandSplitters = [
-		"y despues",
-		"y luego"
-	] 
+
 	## Lista de WakeWords
 	wakeWords = [
 		"melissa"
@@ -78,8 +72,9 @@ class MelissaService:
 		self.nlu = NLUService(self)
 
 		############# Debug
-		self.devices["ventilador"] = Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
-		self.devices["bombilla"] = Bolb("192.168.1.51", "AF:AF:AF:00:00:00", "bombilla")
+		self.things["devices"]["ventilador"] = Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
+		self.things["devices"]["bombilla"] = Bolb("192.168.1.51", "AF:AF:AF:00:00:00", "bombilla")
+		self.things["ambiences"]["ambiente"] = Ambience("ambiente")
 
 	## Método que despierta al servicio
 	def wake(self):
