@@ -1,4 +1,4 @@
-
+## Importación de modulos necesarios
 import modules.led_module_library.apa102 as apa102
 import time
 import threading
@@ -7,14 +7,16 @@ try:
     import queue as Queue
 except ImportError:
     import Queue as Queue
-
+## Importación de patrones
 from modules.led_module_library.alexa_led_pattern import AlexaLedPattern as AlexaLedPattern
 from modules.led_module_library.google_home_led_pattern import GoogleHomeLedPattern as GoogleHomeLedPattern
 from modules.led_module_library.melissa_led_pattern import MelissaLedPattern as MelissaLedPattern
 
 class Pixels:
+    ## Constante que define la cantidad de LEDs del anillo
     PIXELS_N = 12
-
+    
+    ## Constructor
     def __init__(self, pattern=MelissaLedPattern):
         self.dev = apa102.APA102(num_led=self.PIXELS_N)
 
@@ -30,12 +32,14 @@ class Pixels:
 
         self.last_direction = None
 
+    ## Método que fija un color
     def SetRingColorRGB(self, r, g, b):
         for i in range(self.PIXELS_N):
             self.dev.set_pixel(i, r, g, b)
 
         self.dev.show()
 
+    ## Animación despertar
     def wakeup(self, direction=0):
         self.last_direction = direction
         def f():
@@ -43,6 +47,7 @@ class Pixels:
 
         self.put(f)
 
+    ## Animación escuchar
     def listen(self):
         if self.last_direction:
             def f():
@@ -51,25 +56,31 @@ class Pixels:
         else:
             self.put(self.pattern.listen)
 
+    ## Animación Pensar
     def think(self):
         self.put(self.pattern.think)
 
+    ## Animación Hablar
     def speak(self):
         self.put(self.pattern.speak)
 
+    ## Apagar
     def off(self):
         self.put(self.pattern.off)
 
+    ## Métopdo privado que se usa para aplicar diseños sin patrón
     def put(self, func):
         self.pattern.stop = True
         self.queue.put(func)
 
+    ## Método privado que ejecuta diseños sin patron
     def _run(self):
         while True:
             func = self.queue.get()
             self.pattern.stop = False
             func()
 
+    ## Método privado que ordena a los led encenderse según el patron definido
     def show(self, data):
         for i in range(self.PIXELS_N):
             self.dev.set_pixel(i, int(data[4*i + 1]), int(data[4*i + 2]), int(data[4*i + 3]))

@@ -5,20 +5,21 @@
 ## Importamos modulos necesarios
 import ipaddress
 import requests
+from objects import Thing
 
 ## Clase que representa el módulo
-class IoTDevice:
+class IoTDevice(Thing):
 
 	## Atributos comunes en todos los dispositivos
 	address = ipaddress.ip_address('255.255.255.255')
 	macAddress = 'FF:FF:FF:FF:FF'
-	alias = 'Default'
-
-	## Definimos acciones disponibles
-	intents = { }
+	alias = 'Device'
 
 	## Constructor
 	def __init__(self, address, mac, alias):
+		# Constructor del objeto padre 
+		Thing.__init__(self)
+
 		## Fijamos la direccion IP
 		self.address = ipaddress.ip_address(address)
 		## Fijamos la direccion MAC

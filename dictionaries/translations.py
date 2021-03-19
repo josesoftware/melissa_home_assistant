@@ -3,15 +3,16 @@
 #####################################################################
 
 ## Diccionario de traducción de comandos de dispositivos
-TRANSLATION_DEVICE_COMMANDS = {
+TRANSLATION_THING_COMMANDS = {
 	"turn on": "enciende",
 	"turn off": "apaga",
 	"color set": "cambia color",
-	"intensity set": "cambia intensidad"
+	"intensity set": "cambia intensidad",
+	"ambience": "ambiente"
 }
 
 ## Definimos Preposiciones linguisticas
-TRANSLATION_PREPOSITIONS = {
+TRANSLATION_PREPOSITIONS = [
 	" a ",
 	" ante ",
 	" bajo ",
@@ -32,7 +33,7 @@ TRANSLATION_PREPOSITIONS = {
 	" tras ",
 	" durante ",
 	" mediante "
-}
+]
 
 ## Definimos artúlos linguísticos
 TRANSLATION_ARTICLES = {

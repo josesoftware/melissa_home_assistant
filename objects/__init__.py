@@ -7,12 +7,26 @@ import json
 from collections import namedtuple
 from string import Formatter
 
-## Clase que representa un Intent
-class Intent:
+## Clase que representa un Thing
+class Thing:
+	## Atributo alias del thing
+	alias = 'Thing'
+
+	## Definimos intents disponibles
+	intents = { }
+
+	## Constructor
+	def __init__(self):
+		pass
+
+	## Método que traduce un Intent en un request al dispositivo
+	def do_intent(self, intent):
+		pass
+
 	## Método estático que crea un objeto 'Intent' desde un texto diccionario
 	@staticmethod
 	def get_object(dictionary):
-		return json.loads(json.dumps(dictionary), object_hook=Intent.from_json)
+		return json.loads(json.dumps(dictionary), object_hook=Thing.from_json)
 
 	## Método estático que devuelve un 'namedTuple' de un texto JSON
 	@staticmethod
