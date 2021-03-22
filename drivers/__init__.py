@@ -6,8 +6,8 @@
 class RPIHat:
 	## Atributos
 	Respeaker2Mic = {"audio-input": 2, "audio-output": 2, "led": 3}
-	Respeaker4Mic = {"audio-input": 2, "audio-output": 2, "led": 3}
-	Respeaker6Mic = {"audio-input": 2, "audio-output": 2, "led": 3}
+	Respeaker4Mic = {"audio-input": 4, "audio-output": 2, "led": 12}
+	Respeaker6Mic = {"audio-input": 6, "audio-output": 2, "led": 12}
 
 class Hardware:
 	## Atributos del hardware
