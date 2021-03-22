@@ -85,7 +85,7 @@ class MelissaService:
 		## Instanciamos el driver de LED
 		## Controlamos excepciones de inicializacion de drivers conflictivos
 		try:
-			self.driver_led = Pixels()
+			self.driver_led = Pixels(ledCount=self.hardware.LED_COUNT)
 		except:
 			self.driver_led = None
 

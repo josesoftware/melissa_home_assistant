@@ -4,6 +4,7 @@
 
 ## Enumeramos los tipos de hardware
 class RPIHat:
+	## Atributos
 	Respeaker2Mic = {"audio-input": 2, "audio-output": 2, "led": 3}
 	Respeaker4Mic = {"audio-input": 2, "audio-output": 2, "led": 3}
 	Respeaker6Mic = {"audio-input": 2, "audio-output": 2, "led": 3}
@@ -25,4 +26,4 @@ class Hardware:
 	## Método estático que construye un hardware
 	@staticmethod
 	def Make(hat):
-		return RPIHat(hat["audio-input"], hat["audio-output"], hat["led"])
+		return Hardware(hat["audio-input"], hat["audio-output"], hat["led"])
