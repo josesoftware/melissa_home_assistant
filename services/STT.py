@@ -139,7 +139,7 @@ class STTService:
 
 					## Lo manda al NLU
 					# self.melissa.nlu.from_stt(phraseArray)
-					print ("Lvl 2 STT Return: " + phraseArray)
+					print ("Lvl 2 STT Return: " + json.dumps(phraseArray, indent=4))
 
 					## Dormimos a la inteligencia artificial
 					self.melissa.sleep()
