@@ -1,5 +1,5 @@
 ## Importación de modulos necesarios
-import drivers.led_module_library.apa102 as apa102
+import drivers.led_library.apa102 as apa102
 import time
 import threading
 from gpiozero import LED
@@ -8,9 +8,9 @@ try:
 except ImportError:
     import Queue as Queue
 ## Importación de patrones
-from drivers.led_module_library.alexa_led_pattern import AlexaLedPattern as AlexaLedPattern
-from drivers.led_module_library.google_home_led_pattern import GoogleHomeLedPattern as GoogleHomeLedPattern
-from drivers.led_module_library.melissa_led_pattern import MelissaLedPattern as MelissaLedPattern
+from drivers.led_library.alexa_led_pattern import AlexaLedPattern as AlexaLedPattern
+from drivers.led_library.google_home_led_pattern import GoogleHomeLedPattern as GoogleHomeLedPattern
+from drivers.led_library.melissa_led_pattern import MelissaLedPattern as MelissaLedPattern
 
 class Pixels:
     ## Constante que define la cantidad de LEDs del anillo
