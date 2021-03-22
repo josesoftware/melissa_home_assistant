@@ -5,7 +5,7 @@
 ##################################
 ## Importamos diccionarios
 from dictionaries.dictionary import LANGUAGE_DICTIONARY as LANGUAGES
-## Importamos modulo de Hardware
+## Importamos driver de Hardware
 from drivers import Hardware, RPIHat
 ## Importacion de objetos
 from services.Melissa import MelissaService

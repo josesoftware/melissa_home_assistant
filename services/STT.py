@@ -135,11 +135,11 @@ class STTService:
 						detectedWords = json.loads(result)
 
 						## Añadimos el resultado a la lista
-						phraseArray.append((detectedWords["text"])
+						phraseArray.append((detectedWords["text"]))
 
 					## Lo manda al NLU
 					# self.melissa.nlu.from_stt(phraseArray)
-					print("Lvl 2 STT Return: ", phraseArray)
+					print ("Lvl 2 STT Return: " + phraseArray)
 
 					## Dormimos a la inteligencia artificial
 					self.melissa.sleep()
