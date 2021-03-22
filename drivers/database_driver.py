@@ -32,13 +32,17 @@ class DatabaseDriver:
 	# Método que conecta con base de datos
 	def connect(self):
 		print("Starting connection")
-		# Conectamos con base de datos
-		self.connection = mysql.connector.connect(
-			host=self.server,
-			user=self.user,
-			password=self.password,
-			database=self.database
-		)
+		## Controlamos excepciones
+		try:
+			# Conectamos con base de datos
+			self.connection = mysql.connector.connect(
+				host=self.server,
+				user=self.user,
+				password=self.password,
+				database=self.database
+			)
+		except:
+			pass
 
 	# Método para ejecutar querys de update / delete / create
 	def execute_query(self, query):
