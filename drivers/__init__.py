@@ -2,11 +2,8 @@
 ## Cabecera del paquete de drivers					                 ##
 #######################################################################
 
-## Importamos modulos necesarios
-from enum import Enum
-
 ## Enumeramos los tipos de hardware
-class RPIHat(Enum):
+class RPIHat:
 	Respeaker2Mic = {"audio-input": 2, "audio-output": 2, "led": 3}
 	Respeaker4Mic = {"audio-input": 2, "audio-output": 2, "led": 3}
 	Respeaker6Mic = {"audio-input": 2, "audio-output": 2, "led": 3}
