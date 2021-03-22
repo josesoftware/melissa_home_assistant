@@ -5,38 +5,21 @@
 ##################################
 ## Importamos diccionarios
 from dictionaries.dictionary import LANGUAGE_DICTIONARY as LANGUAGES
-from modules.database_module import DatabaseModule
-from modules.communication_module import CommunicationModule
-## Controlamos excepciones de importación de modulos conflictivos
-try:
-    from modules.led_module import Pixels
-except:
-    pass
+## Importamos modulo de Hardware
+from drivers import Hardware, RPIHat
 ## Importacion de objetos
 from services.Melissa import MelissaService
 
 #############################################
-##	Instanciamos Módulos				   ##
+## Instancia del hardware                  ##
 #############################################
-## Instanciamos el modulo controlador de los LED
-## Controlamos excepciones de inicializacion de modulos conflictivos
-try:
-    ledModule = Pixels()
-except:
-    ledModule = None
-## Instanciamos el modulo de base de datos
-dbModule = DatabaseModule # Pixels()
-## Instanciamos el modulo controlador de audio
-audioModule = None # Pixels()
-## Instanciamos el modulo de comunicación
-communicationModule = CommunicationModule()
+hardware = Hardware.Make(RPIHat.Respeaker4Mic)
 
 ##############################################
 ## Instanciamos servicios					##
 ##############################################
 ## Instanciamos el servicio Melissa
-melissa = MelissaService(LANGUAGES["ES-ES"], ledModule, dbModule, audioModule, communicationModule)
+melissa = MelissaService(LANGUAGES["ES-ES"], hardware)
 
 ## Iniciamos el servicio
 melissa.start_service()
-print(dbModule)

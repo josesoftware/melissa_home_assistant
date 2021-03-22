@@ -1,5 +1,5 @@
 #######################################################################
-## Este módulo se encarga de la comunicacion con base de datos       ##
+## Este driver se encarga de la comunicacion con base de datos       ##
 #######################################################################
 
 # Importamos conector SQL
@@ -8,7 +8,7 @@ from mysql.connector import Error
 import json
 
 # Definicion del objeto
-class DatabaseModule:
+class DatabaseDriver:
     # Atributos de configuracion
     database = 'melissa_smart_home'
     server = '127.0.0.1'

@@ -1,5 +1,5 @@
 ## Importación de modulos necesarios
-import modules.led_module_library.apa102 as apa102
+import drivers.led_module_library.apa102 as apa102
 import time
 import threading
 from gpiozero import LED
@@ -8,16 +8,17 @@ try:
 except ImportError:
     import Queue as Queue
 ## Importación de patrones
-from modules.led_module_library.alexa_led_pattern import AlexaLedPattern as AlexaLedPattern
-from modules.led_module_library.google_home_led_pattern import GoogleHomeLedPattern as GoogleHomeLedPattern
-from modules.led_module_library.melissa_led_pattern import MelissaLedPattern as MelissaLedPattern
+from drivers.led_module_library.alexa_led_pattern import AlexaLedPattern as AlexaLedPattern
+from drivers.led_module_library.google_home_led_pattern import GoogleHomeLedPattern as GoogleHomeLedPattern
+from drivers.led_module_library.melissa_led_pattern import MelissaLedPattern as MelissaLedPattern
 
 class Pixels:
     ## Constante que define la cantidad de LEDs del anillo
     PIXELS_N = 12
     
     ## Constructor
-    def __init__(self, pattern=MelissaLedPattern):
+    def __init__(self, pattern=MelissaLedPattern, ledCount=12):
+        self.PIXELS_N = ledCount
         self.dev = apa102.APA102(num_led=self.PIXELS_N)
 
         self.pattern = pattern(show=self.show)

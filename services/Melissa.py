@@ -10,6 +10,17 @@ from services.TTS import TTSService
 from services.STT import STTService
 from services.NLU import NLUService
 
+## Importamos dirvers
+from drivers.database_driver import DatabaseDriver
+from drivers.communication_driver import CommunicationDriver
+from drivers.database_driver import DatabaseDriver
+from drivers.audio_driver import AudioDriver
+## Controlamos excepciones de importación de drivers conflictivos
+try:
+    from drivers.led_driver import Pixels
+except:
+    pass
+
 ## Importamos objetos
 from objects.Switch import Switch
 from objects.Bolb import Bolb
@@ -40,14 +51,16 @@ class MelissaService:
 	]
 
 	##### Instancias de módulos
-	## Instancia del modulo LED
-	module_led = None
-	## Instancia del modulo de base de datos
-	module_db = None
-	## Instancia del modulo audio
-	module_audio = None
-	## Instancia del modulo de comunicacion
-	communication_module = None
+	## Instancia del hardware
+	hardware = None
+	## Instancia del driver de LED
+	driver_led = None
+	## Instancia del driver de base de datos
+	driver_db = None
+	## Instancia del driver de audio
+	driver_audio = None
+	## Instancia del driver de comunicacion
+	driver_communication = None
 
 
 	##### Instancia de servicios
@@ -56,18 +69,25 @@ class MelissaService:
 	nlu = None
 
 	## Constructor
-	def __init__(self, language, led_module, db_module, audio_module, communication_module):
+	def __init__(self, language, hardware):
 		############# Instancia de los modulos
 		## Definimos el lenguaje de trabajo
 		self.language = language
-		## Instanciamos el módulo LED
-		self.module_led = led_module
-		## Instanciamos el módulo de base de datos
-		self.module_db = db_module
-		## Instanciamos el módulo de audio
-		self.module_audio = audio_module
-		## Instanciamos el módulo de comunicaciones
-		self.communication_module = communication_module
+		## Instanciamos el hardware
+		self.hardware = hardware
+
+		## Instanciamos el driver de base de datos
+		self.driver_db = DatabaseDriver()
+		## Instanciamos el driver de audio
+		self.driver_audio = AudioDriver(self.hardware)
+		## Instanciamos el driver de comunicaciones
+		self.driver_communication = CommunicationDriver()
+		## Instanciamos el driver de LED
+		## Controlamos excepciones de inicializacion de drivers conflictivos
+		try:
+			self.driver_led = Pixels()
+		except:
+			self.driver_led = None
 
 		############# Instancia del resto de servicios
 		## Instanciamos el servicio TTS
@@ -88,8 +108,8 @@ class MelissaService:
 		self.wakeUp = True
 
 		## Animamos los led con la animacion de despertar
-		if self.module_led is not None:
-			self.module_led.wakeup()
+		if self.driver_led is not None:
+			self.driver_led.wakeup()
 
 		## Mensaje de aviso
 		print("Melissa is wake up")
@@ -100,8 +120,8 @@ class MelissaService:
 		self.wakeUp = False
 
 		## Apagamos los led
-		if self.module_led is not None:
-			self.module_led.off()
+		if self.driver_led is not None:
+			self.driver_led.off()
 
 		## Mensaje de aviso
 		print("Melissa is sleeping")
@@ -112,8 +132,8 @@ class MelissaService:
 		self.wakeUp = False
 
 		## Apagamos los led
-		if self.module_led is not None:
-			self.module_led.off()
+		if self.driver_led is not None:
+			self.driver_led.off()
 
 		## Mensaje de aviso
 		print("See you soon!")
@@ -135,7 +155,7 @@ class MelissaService:
 				## Recupera el dispositivo
 				device = self.things["devices"][intent["device"]]
 				## Ejecuta el intent en el propio dispositivo
-				print ("Intent result: " + str(device.do_intent(intent, self.communication_module)))
+				print ("Intent result: " + str(device.do_intent(intent, self.driver_communication)))
 				## Sale del método
 				return
 
