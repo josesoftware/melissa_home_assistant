@@ -5,7 +5,7 @@
 ###############################################################
 
 ## Importamos metodos de la libreria de utilidades
-from libraries.lib_utils import count_words, multi_split
+from libraries.lib_utils import count_words, multi_split, merge_array
 
 ## Importamos diccionarios
 from dictionaries import translations as TRANSLATIONS
@@ -52,7 +52,7 @@ class NLUService:
 			## Si el comando está en la frase recibida del STT
 			if command in intentPhrase:
 				## Retornará command para salir del metodo
-				return "command"
+				return command
 		
 		###########################################
 		#### Busca dispositivos en segundo lugar
@@ -72,9 +72,17 @@ class NLUService:
 		return None
 
 	## Método que busca comandos en un input del servicio STT
-	def match_intents(self, sttInput):
-		## Separamos primero la hipotesis del STT mediante los separadores de comando
-		commandPhrases = multi_split(sttInput, self.COMMAND_SPLITTER)
+	def match_intents(self, sttInputs):
+		## Combinamos las frases provenientes del STT ( Habilita compatiblidad de multichannel de audio )
+		sttInputs = merge_array(sttInputs)
+
+		## Definimos un array de datos
+		commandPhrases = []
+
+		## Recorremos cada uno de los inputs
+		for sttInput in sttInputs:
+			## Separamos primero la hipotesis del STT mediante los separadores de comando
+			commandPhrases.append(multi_split(sttInput, self.COMMAND_SPLITTER))
 
 		## Definimos un Array de intents de retorno
 		intentArray = [ ]

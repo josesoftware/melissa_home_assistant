@@ -5,6 +5,21 @@
 ## Importamos modulos necesarios
 import re
 
+## Método que combina una matriz eliminando elementos duplicados
+def merge_array(array):
+	## Matríz de retorno
+	result = []
+
+	## Recorre cada elemento del array
+	for element in array:
+		## Si el elemanto no está incluido en el array resultante
+		if element not in result:
+			## Agregamos el elemento al array resultante
+			result.append(element)
+
+	## Retorna el resultado
+	return result
+
 ## Método que cuenta palabras de un string
 def count_words(inString):
 	## Retorna el recuento de palabras

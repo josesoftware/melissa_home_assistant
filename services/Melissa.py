@@ -161,3 +161,7 @@ class MelissaService:
 
 			## DEBUG - Mostramos Intent
 			print(json.dumps(intent))
+
+	## Método que configura al servicio Melissa como confundida
+	def has_confusion(self, question):
+		pass
