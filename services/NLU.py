@@ -39,7 +39,7 @@ class NLUService:
 	## Método que recibe datos del servicio STT
 	def from_stt(self, sttInput):
 		## Pone al servicio melissa en modo pensar
-		self.melissa.thinking()
+		# self.melissa.thinking()
 
 		## Retorna el intent detectado
 		self.melissa.from_nlu(self.match_intents(sttInput))
@@ -222,7 +222,7 @@ class NLUService:
 				## Si aun no se han añadido intents a la lista se hace
 				if not returnArray:
 					## Añadimos los intents del primer canal
-					returnArray.append(intentChannel)
+					returnArray = intentChannel
 
 				## Si ya se habian añadido
 				else:
@@ -332,7 +332,6 @@ class NLUService:
 													else:
 														## Se añade el parametro a la lista de retorno
 														returnArray[i]['parameters'][parameter] = parameter
-
 
 							## Si la estructura es distinta
 							else:
