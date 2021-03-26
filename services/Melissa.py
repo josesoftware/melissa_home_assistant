@@ -101,6 +101,7 @@ class MelissaService:
 		self.things["devices"]["ventilador"] = Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
 		self.things["devices"]["bombilla"] = Bolb("192.168.1.51", "AF:AF:AF:00:00:00", "bombilla")
 		self.things["ambiences"]["ambiente"] = Ambience("ambiente")
+		self.things["commands"]["pon musica"] = "test"
 
 	## Método que despierta al servicio
 	def wake(self):
@@ -175,7 +176,22 @@ class MelissaService:
 	## Método que recibe datos del servicio NLU
 	def from_nlu(self, intents):
 		## Recurre cada uno de los intents
-		## for intent in intents:
+		for intent in intents:
+			## Cuando el intent es un comando
+			if 'command' in intent.keys():
+				##### DEBUG
+				## Si el intent es el comando "pon musica"
+				if intent["command"] == "pon musica":
+					import os
+
+					file = "/var/www/html/python/audio/audio8.mp3"
+					os.system("mpg123 " + file)
+
+					## Fijamos el color a los led
+					self.driver_led.think()
+			else:
+				## DEBUG - Mostramos Intent
+				print(json.dumps(intents, indent=4))
 			## Si hay un dispositivo en el intent
 			## if "device" in intent.keys():
 				## Recupera el dispositivo
@@ -184,9 +200,6 @@ class MelissaService:
 				## print ("Intent result: " + str(device.do_intent(intent, self.driver_communication)))
 				## Sale del método
 				## return
-
-		## DEBUG - Mostramos Intent
-		print(json.dumps(intents, indent=4))
 
 		## Duerme el servicio cuando termina
 		self.sleep()
