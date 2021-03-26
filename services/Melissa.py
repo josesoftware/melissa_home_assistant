@@ -188,6 +188,9 @@ class MelissaService:
 		## DEBUG - Mostramos Intent
 		print(json.dumps(intents, indent=4))
 
+		## Duerme el servicio cuando termina
+		self.sleep()
+
 	## Método que configura al servicio Melissa como confundida
 	def has_confusion(self, question=None):
 		## Si no se ha definido una pregunta

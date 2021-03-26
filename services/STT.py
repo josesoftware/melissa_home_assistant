@@ -138,11 +138,10 @@ class STTService:
 						phraseArray.append((detectedWords["text"]))
 
 					## Lo manda al NLU
-					# self.melissa.nlu.from_stt(phraseArray)
-					print ("Lvl 2 STT Return: " + json.dumps(phraseArray, indent=4))
-
-					## Dormimos a la inteligencia artificial
-					self.melissa.sleep()
+					self.melissa.nlu.from_stt(phraseArray)
+					
+					### DEBUG
+					#print ("Lvl 2 STT Return: " + json.dumps(phraseArray, indent=4))
 
 	## Método privado que se dedica a buscar el wakeWord
 	def first_level_stt(self, index, data):
