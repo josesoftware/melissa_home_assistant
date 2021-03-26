@@ -38,8 +38,9 @@ class NLUService:
 
 	## Método que recibe datos del servicio STT
 	def from_stt(self, sttInput):
-		## DEBUG - Mostramos string
-		print(sttInput)
+		## Pone al servicio melissa en modo pensar
+		self.melissa.thinking()
+
 		## Retorna el intent detectado
 		self.melissa.from_nlu(self.match_intents(sttInput))
 
@@ -76,131 +77,276 @@ class NLUService:
 		## Combinamos las frases provenientes del STT ( Habilita compatiblidad de multichannel de audio )
 		sttInputs = merge_array(sttInputs)
 
-		## Definimos un array de datos
-		commandPhrases = []
-
-		## Recorremos cada uno de los inputs
-		for sttInput in sttInputs:
-			## Separamos primero la hipotesis del STT mediante los separadores de comando
-			commandPhrases.append(multi_split(sttInput, self.COMMAND_SPLITTER))
-
 		## Definimos un Array de intents de retorno
 		intentArray = [ ]
 
-		## Recorremos la lista de frases obtenida tras aplicar separadores
-		for phrase in commandPhrases:
-			## Definimos una lista de posibles de ordenes
-			possibleCommands = [ ]
+		## Recorremos cada canal de audio
+		for sttInput in sttInputs:
+			## Separamos primero la hipotesis del STT mediante los separadores de comando
+			commandPhrases = multi_split(sttInput, self.COMMAND_SPLITTER)
 
-			## Definimos el intent
-			_intent = None
+			## Definimos un Array de intents por canal
+			intentChannel = [ ]
 
-			####################################################################
-			##### Nivel 1 de comprobación -> Determinar con que tipo de thing se intenta tratar
-			_thing = self.match_thing(phrase)
+			## Recorremos la frase en cada uno de los canales de audio
+			for phrase in commandPhrases:
+				## Definimos una lista de posibles de ordenes
+				possibleCommands = [ ]
 
-			## Si el thing retornado es None, pasamos al siguiente ciclo
-			if _thing is None:
-				continue
+				## Definimos el intent
+				_intent = None
 
-			## Si el tipo de thing es un comando
-			if _thing == "command":
-				############################################################
-				## Nivel 2 de comprobación de comandos					  ##
-				############################################################
-				## Recorremos cada una de las ordenes internas de melissa
-				for command in self.melissa.things["commands"]:
-					## Si el comando está en la frase recibida del STT
-					if command in phrase:
-						## Marcamos la orden como posible
-						possibleCommands.append(command)   
+				####################################################################
+				##### Nivel 1 de comprobación -> Determinar con que tipo de thing se intenta tratar
+				_thing = self.match_thing(phrase)
 
-			
+				## Si el thing retornado es None, pasamos al siguiente ciclo
+				if _thing is None:
+					continue
 
-				## Si es una orden interna de melissa 
-				if len(possibleCommands) != 0:
-					## Comprueba si existe más de una orden a procesar en la misma frase
-					if len(possibleCommands) > 1:
-						## Retorna Intent vacio
-						return intentArray
+				## Si el tipo de thing es un comando
+				if _thing == "command":
+					############################################################
+					## Nivel 2 de comprobación de comandos					  ##
+					############################################################
+					## Recorremos cada una de las ordenes internas de melissa
+					for command in self.melissa.things["commands"]:
+						## Si el comando está en la frase recibida del STT
+						if command in phrase:
+							## Marcamos la orden como posible
+							possibleCommands.append(command)   
 
-					####################################################################
-					##### Nivel 3 de comprobación
-					## Comprobamos si es un comando simple 
-					## Recorremos cada comando
-					## Comprobamos si el comando tiene la misma cantidad de palabras que la frase
-					if count_words(sttInput) == count_words(possibleCommands[0]):
-						## Retornamos directamente el comando sin parametrizar
-						return self.melissa.things["commands"][possibleCommands[0]]
-					else:
-						## Componemos un intent basandonos en la plantilla
-						_intent = self.THING_INTENT_PATTERN[possibleCommands[0]]
+				
 
-					####################################################################
-					##### Nivel 4 de comprobación
-					### Determinamos el tipo de intent
-					## Si el intent es de tipo exec
-					if _intent["command"] == "exec":
+					## Si es una orden interna de melissa 
+					if len(possibleCommands) != 0:
+						## Comprueba si existe más de una orden a procesar en la misma frase
+						if len(possibleCommands) > 1:
+							## Retorna Intent vacio
+							return intentArray
+
+						####################################################################
+						##### Nivel 3 de comprobación
+						## Comprobamos si es un comando simple 
+						## Recorremos cada comando
+						## Comprobamos si el comando tiene la misma cantidad de palabras que la frase
+						if count_words(sttInput) == count_words(possibleCommands[0]):
+							## Retornamos directamente el comando sin parametrizar
+							return self.melissa.things["commands"][possibleCommands[0]]
+						else:
+							## Componemos un intent basandonos en la plantilla
+							_intent = self.THING_INTENT_PATTERN[possibleCommands[0]]
+
+						####################################################################
+						##### Nivel 4 de comprobación
+						### Determinamos el tipo de intent
+						## Si el intent es de tipo exec
+						if _intent["command"] == "exec":
+							continue
+
+				## Si el intent quiere tratar con dispositivos
+				elif _thing == "device":
+					### Basándonos en el tipo de intent, identificamos los RAW commands
+					## Ordenamos hacer match de dispositivo
+					targetDevice = self.match_device(phrase)
+
+					## Añadimos el header del intent
+					_intent = self.THING_INTENT_PATTERN["device"]
+						
+					## Añadimos el dispositivo al intent
+					_intent["device"] = targetDevice
+
+					## Ordenamos hacer match de intent del dispositivo
+					targetDeviceIntent = self.match_device_intent(targetDevice, phrase)
+
+					## Si no se encuentra ningun intent
+					if targetDeviceIntent is None:
+						## Pasamos de ciclo
 						continue
 
-			## Si el intent quiere tratar con dispositivos
-			elif _thing == "device":
-				### Basándonos en el tipo de intent, identificamos los RAW commands
-				## Ordenamos hacer match de dispositivo
-				targetDevice = self.match_device(phrase)
+					## Añadimos el intent del dispositivo al intent general
+					_intent["intent"] = targetDeviceIntent
 
-				## Añadimos el header del intent
-				_intent = self.THING_INTENT_PATTERN["device"]
+					## Buscamos parametros "RAW" para llevar a cabo el intent
+					_intent["parameters"] = self.match_intent_params("devices", targetDevice, targetDeviceIntent, phrase)
+
+				## Si el intent quiere tratar con ambientes
+				elif _thing == "ambience":
+					### Basándonos en el tipo de intent, identificamos los RAW commands
+					## Ordenamos hacer match de dispositivo
+					targetAmbience = self.match_ambience(phrase)
+
+					## Añadimos el header del intent
+					_intent = self.THING_INTENT_PATTERN["ambience"]
+						
+					## Añadimos el ambiente al intent
+					_intent["ambience"] = targetAmbience
+
+					## Ordenamos hacer match de intent del dispositivo
+					targetAmbienceIntent = self.match_ambience_intent(targetAmbience, phrase)
+
+					## Si no se encuentra ningun intent
+					if targetAmbienceIntent is None:
+						## Pasamos de ciclo
+						continue
+
+					## Añadimos el intent del dispositivo al intent general
+					_intent["intent"] = targetAmbienceIntent
+
+					## Buscamos parametros "RAW" para llevar a cabo el intent
+					_intent["parameters"] = self.match_intent_params("ambiences", targetAmbience, targetAmbienceIntent, phrase)
+
+				## Añadimos el intent al array de retorno si no es Nulo
+				if _intent is not None:
+					intentChannel.append(_intent)
+
+			## Añadimos el intent channel al intent array de retorno
+			intentArray.append(intentChannel)
+
+		## Combina el array de intents y lo exporta
+		return self.merge_intents(intentArray)
+
+	## Método que combina un array de intents
+	def merge_intents(self, intentArray):
+		## Si el array viene vacio retornará vacío
+		if not intentArray:
+			return []
+
+		## Declara el array de retorno
+		returnArray = []
+
+		## Recupera primero la cantidad de intents por canal
+		for intentChannel in intentArray:
+			## Si el array de intents del canal de audio actual no viene vacio
+			if intentChannel:
+				## Si aun no se han añadido intents a la lista se hace
+				if not returnArray:
+					## Añadimos los intents del primer canal
+					returnArray.append(intentChannel)
+
+				## Si ya se habian añadido
+				else:
+					#### Comprobamos el recuento de intents del array de retorno en comparacion con los intents del canal de audio actual
+					## Si tienen la misma longitud
+					if len(returnArray) == len(intentChannel):
+						## Recorreremos la lista 
+						for i in range(len(returnArray)):
+							## Comprueba que la lista de retorno y la lista del canal de audio actual tengan la misma estructura
+							if set(returnArray[i].keys()) == set(intentChannel[i].keys()):
+								## Si el intent procesa un comando
+								if "command" in returnArray[i].keys():
+
+									## Si el comando no es igual
+									if returnArray[i]['command'] != intentChannel[i]['command']:
+
+										## Retorna array vacío
+										return [{ "question": "match_confusion_general", "parameters": { } }]
+
+								## Si el intent procesa un dispositivo
+								elif "device" in returnArray[i].keys():
+									## Si el dispositivo no es igual
+									if returnArray[i]['device'] != intentChannel[i]['device']:
+
+										## Retorna intent de confusion
+										return [{ "question": "match_confusion_device", "parameters": { "devices": [returnArray[i]['device'], intentChannel[i]['device']] } }]
+									
+									## Si el dispositivo es el mismo
+									else:
+										## Si el intent no es el mismo
+										if returnArray[i]['intent'] != intentChannel[i]['intent']:
+
+											## Retorna intent de confusion
+											return [{ "question": "match_confusion_device_intent", "parameters": { "device": returnArray[i]['device'], "intents": [returnArray[i]['intent'], intentChannel[i]['intent']] } }]
+
+										## Si el intent es el mismo
+										else:
+											## Si el intent de retorno no tiene parametros
+											if not returnArray[i]['parameters']:
+
+												## Añade los parametros del intent devuelto por el canal de audio actual
+												returnArray[i]['parameters'] = intentChannel[i]['parameters']
+											
+											## Si el intent ya tenia parametros
+											else:
+												## Recorre los parametros del intent del canal de audio actual
+												for parameter in intentChannel[i]['parameters']:
+
+													## Comprueba si el parametro existe en el intent de retorno
+													if parameter in returnArray[i]['parameters']:
+
+														## Compara el valor del parametro del intent de retorno con el del canal de audio actual
+														if returnArray[i]['parameters'][parameter] != intentChannel[i]['parameters'][parameter]:
+
+															#################### COLOR
+															##########################
+															if parameter == 'color':
+																## Retorna error de confusión por color
+																return [{ "question": "match_confusion_intent_parameter_color", "parameters": { "colors": [returnArray[i]['parameters'][parameter], parameter] } }]
+
+													## Si el parametro no está en la lista
+													else:
+
+														## Se añade el parametro a la lista de retorno
+														returnArray[i]['parameters'][parameter] = parameter
+								
+								## Si el intent procesa un ambiente
+								elif "ambience" in returnArray[i].keys():
+									## Si el ambiente no es igual
+									if returnArray[i]['ambience'] != intentChannel[i]['ambience']:
+										## Retorna intent de confusion
+										return [{ "question": "match_confusion_ambience", "parameters": { "ambiences": [returnArray[i]['ambience'], intentChannel[i]['ambience']] } }]
+									
+									## Si el dispositivo es el mismo
+									else:
+										## Si el intent no es el mismo
+										if returnArray[i]['intent'] != intentChannel[i]['intent']:
+											## Retorna intent de confusion
+											return [{ "question": "match_confusion_ambience_intent", "parameters": { "ambienec": returnArray[i]['ambienec'], "intents": [returnArray[i]['intent'], intentChannel[i]['intent']] } }]
+
+										## Si el intent es el mismo
+										else:
+											## Si el intent de retorno no tiene parametros
+											if not returnArray[i]['parameters']:
+
+												## Añade los parametros del intent devuelto por el canal de audio actual
+												returnArray[i]['parameters'] = intentChannel[i]['parameters']
+											
+											## Si el intent ya tenia parametros
+											else:
+												## Recorre los parametros del intent del canal de audio actual
+												for parameter in intentChannel[i]['parameters']:
+
+													## Comprueba si el parametro existe en el intent de retorno
+													if parameter in returnArray[i]['parameters']:
+
+														## Compara el valor del parametro del intent de retorno con el del canal de audio actual
+														if returnArray[i]['parameters'][parameter] != intentChannel[i]['parameters'][parameter]:
+
+															#################### COLOR
+															##########################
+															if parameter == 'color':
+																## Retorna error de confusión por color
+																return [{ "question": "match_confusion_intent_parameter_color", "parameters": { "colors": [returnArray[i]['parameters'][parameter], parameter] } }]
+
+													## Si el parametro no está en la lista
+													else:
+														## Se añade el parametro a la lista de retorno
+														returnArray[i]['parameters'][parameter] = parameter
+
+
+							## Si la estructura es distinta
+							else:
+								## Indicamos que el servicio está confundido
+								return [{ "question": "match_confusion_intent", "parameters": { } }]
 					
-				## Añadimos el dispositivo al intent
-				_intent["device"] = targetDevice
+					## Si el array de retorno es mas largo
+					else:
+						## Indicamos que el servicio está confundido
+						return [{ "question": "match_confusion_general", "parameters": { } }]
 
-				## Ordenamos hacer match de intent del dispositivo
-				targetDeviceIntent = self.match_device_intent(targetDevice, phrase)
 
-				## Si no se encuentra ningun intent
-				if targetDeviceIntent is None:
-					## Pasamos de ciclo
-					continue
-
-				## Añadimos el intent del dispositivo al intent general
-				_intent["intent"] = targetDeviceIntent
-
-				## Buscamos parametros "RAW" para llevar a cabo el intent
-				_intent["parameters"] = self.match_intent_params("devices", targetDevice, targetDeviceIntent, phrase)
-
-			## Si el intent quiere tratar con ambientes
-			elif _thing == "ambience":
-				### Basándonos en el tipo de intent, identificamos los RAW commands
-				## Ordenamos hacer match de dispositivo
-				targetAmbience = self.match_ambience(phrase)
-
-				## Añadimos el header del intent
-				_intent = self.THING_INTENT_PATTERN["ambience"]
-					
-				## Añadimos el ambiente al intent
-				_intent["ambience"] = targetAmbience
-
-				## Ordenamos hacer match de intent del dispositivo
-				targetAmbienceIntent = self.match_ambience_intent(targetAmbience, phrase)
-
-				## Si no se encuentra ningun intent
-				if targetAmbienceIntent is None:
-					## Pasamos de ciclo
-					continue
-
-				## Añadimos el intent del dispositivo al intent general
-				_intent["intent"] = targetAmbienceIntent
-
-				## Buscamos parametros "RAW" para llevar a cabo el intent
-				_intent["parameters"] = self.match_intent_params("ambiences", targetAmbience, targetAmbienceIntent, phrase)
-
-			## Añadimos el intent al array de retorno si no es Nulo
-			if _intent is not None:
-				intentArray.append(_intent)
-
-		##### Exportación de resultados
-		return intentArray
+		## Retorna array vacío
+		return returnArray
 
 	###### Metodos que buscan atributos RAW
 	## Método que busca parametros de un intent en una frase

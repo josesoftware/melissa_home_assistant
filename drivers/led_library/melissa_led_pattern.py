@@ -168,9 +168,9 @@ class MelissaLedPattern(object):
             wheel = self.wheel(int(i * 256 / self.pixels_number) & 255)
 
             ## Fijamos el color RGB
-            pixels[i * 4 + 1] = wheel[0] * 0.85
-            pixels[i * 4 + 2] = wheel[1] * 0.85
-            pixels[i * 4 + 3] = wheel[2] * 0.85
+            pixels[i * 4 + 1] = wheel[0]
+            pixels[i * 4 + 2] = wheel[1]
+            pixels[i * 4 + 3] = wheel[2]
 
         ## Mostramos color
         self.show(pixels)

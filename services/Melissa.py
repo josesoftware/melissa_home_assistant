@@ -104,6 +104,14 @@ class MelissaService:
 
 	## Método que despierta al servicio
 	def wake(self):
+		## Si el servicio ya estaba despierto
+		if self.wakeUp:
+			## Invoca al modo escuchar
+			self.listening()
+
+			## Sale del método
+			return
+
 		## Modificamos la valiza de estado
 		self.wakeUp = True
 
@@ -113,6 +121,24 @@ class MelissaService:
 
 		## Mensaje de aviso
 		print("Melissa is wake up")
+
+	## Método que aplica el modo scuchar al servicio melissa
+	def listening(self):
+		## Animamos los led con la animacion de despertar
+		if self.driver_led is not None:
+			self.driver_led.listen()
+
+		## Mensaje de aviso
+		print("Listening commands...")
+
+	## Método que aplica el modo pensar al servicio melissa
+	def thinking(self):
+		## Animamos los led con la animacion de despertar
+		if self.driver_led is not None:
+			self.driver_led.think()
+
+		## Mensaje de aviso
+		print("Finding intents...")
 
 	## Método que duerme al servicio
 	def sleep(self):
@@ -149,19 +175,25 @@ class MelissaService:
 	## Método que recibe datos del servicio NLU
 	def from_nlu(self, intents):
 		## Recurre cada uno de los intents
-		for intent in intents:
+		## for intent in intents:
 			## Si hay un dispositivo en el intent
-			if "device" in intent.keys():
+			## if "device" in intent.keys():
 				## Recupera el dispositivo
-				device = self.things["devices"][intent["device"]]
+				## device = self.things["devices"][intent["device"]]
 				## Ejecuta el intent en el propio dispositivo
-				print ("Intent result: " + str(device.do_intent(intent, self.driver_communication)))
+				## print ("Intent result: " + str(device.do_intent(intent, self.driver_communication)))
 				## Sale del método
-				return
+				## return
 
-			## DEBUG - Mostramos Intent
-			print(json.dumps(intent))
+		## DEBUG - Mostramos Intent
+		print(json.dumps(intents, indent=4))
 
 	## Método que configura al servicio Melissa como confundida
-	def has_confusion(self, question):
-		pass
+	def has_confusion(self, question=None):
+		## Si no se ha definido una pregunta
+		if question is None:
+			## Mensaje debug
+			question = "Service confused. Try again and with more specific command."
+
+		## Mensaje debug
+		print (question)
