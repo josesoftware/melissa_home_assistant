@@ -25,9 +25,9 @@ class NLUService:
 		"ambience": { "ambience": "", "intent": "", "parameters": { } },
 		"device": { "device": "", "intent": "", "parameters": { } }
 	}
-	## Lista de ordnenes
+	## Lista de separadores de ordnenes
 	COMMAND_SPLITTER = [
-		"y despues",
+		"y después",
 		"y luego"
 	] 
 
@@ -91,7 +91,7 @@ class NLUService:
 			## Recorremos la frase en cada uno de los canales de audio
 			for phrase in commandPhrases:
 				## Definimos una lista de posibles de ordenes
-				possibleCommands = [ ]
+				possibleCommands = []
 
 				## Definimos el intent
 				_intent = None
@@ -113,8 +113,10 @@ class NLUService:
 					for command in self.melissa.things["commands"]:
 						## Si el comando está en la frase recibida del STT
 						if command in phrase:
-							## Marcamos la orden como posible
-							possibleCommands.append(command)   
+							## Si el comando no esta ya en la lista
+							if command not in possibleCommands:
+								## Marcamos la orden como posible
+								possibleCommands.append(command) 
 
 				
 
