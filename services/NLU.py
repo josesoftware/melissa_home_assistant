@@ -198,10 +198,10 @@ class NLUService:
 
 				## Añadimos el intent al array de retorno si no es Nulo
 				if _intent is not None:
-					intentChannel.append(_intent)
+					intentChannel.append(_intent.copy())
 
 			## Añadimos el intent channel al intent array de retorno
-			intentArray.append(intentChannel)
+			intentArray.append(intentChannel.copy())
 
 		## Combina el array de intents y lo exporta
 		return self.merge_intents(intentArray)
@@ -222,7 +222,7 @@ class NLUService:
 				## Si aun no se han añadido intents a la lista se hace
 				if not returnArray:
 					## Añadimos los intents del primer canal
-					returnArray = intentChannel
+					returnArray = intentChannel.copy()
 
 				## Si ya se habian añadido
 				else:
