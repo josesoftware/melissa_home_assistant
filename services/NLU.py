@@ -53,7 +53,7 @@ class NLUService:
 			## Si el comando está en la frase recibida del STT
 			if command in intentPhrase:
 				## Retornará command para salir del metodo
-				return command
+				return "command"
 		
 		###########################################
 		#### Busca dispositivos en segundo lugar
@@ -133,11 +133,13 @@ class NLUService:
 						## Recorremos cada comando
 						## Comprobamos si el comando tiene la misma cantidad de palabras que la frase
 						if count_words(sttInput) == count_words(possibleCommands[0]):
-							## Retornamos directamente el comando sin parametrizar
-							return self.melissa.things["commands"][possibleCommands[0]]
-						else:
 							## Componemos un intent basandonos en la plantilla
-							_intent = self.THING_INTENT_PATTERN[possibleCommands[0]]
+							_intent = self.THING_INTENT_PATTERN["command"]
+
+							## Fijamos el comando
+							_intent["command"] = possibleCommands[0]
+						else:
+							continue
 
 						####################################################################
 						##### Nivel 4 de comprobación
