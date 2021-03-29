@@ -39,11 +39,7 @@ class StorageService:
 	def load_configfile(self):
 		## Declaramos variable de retorno
 		returnJson = None
-
-		## Si no existe el fichero, retornará nulo
-		if not self.check_configfile_exists():
-			return returnJson
-
+		
 		## Controla excepciones
 		try:
 			## Abre el fichero de configuración para leerlo
