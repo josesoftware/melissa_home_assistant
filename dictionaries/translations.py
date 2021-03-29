@@ -55,7 +55,7 @@ TRANSLATION_COLOR = {
 	"fuxia": "FUCHSIA",
 	"marino": "NAVY",
 	"azul": "BLUE",
-	"verde azulado": "TEAL",
+	"aguamarina": "TEAL",
 	"agua": "AQUA",
 	"cián": "CYAN",
 	"lima": "LIME",

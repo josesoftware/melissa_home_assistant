@@ -47,7 +47,21 @@ class NLUService:
 	## Método que determina con que tipo de thing se desea tratar
 	def match_thing(self, intentPhrase):
 		###########################################
-		#### Busca primero comandos
+		#### Busca dispositivos en primer lugar
+		## Si se ha identificado un dispositivo
+		if self.match_device(intentPhrase) is not None:
+			## Retornará device para salir del metodo
+			return "device"
+
+		###########################################
+		#### Busca dispositivos en segundo lugar
+		## Si se ha identificado el dispositivo
+		if self.match_ambience(intentPhrase) is not None:
+			## Retornará device para salir del metodo
+			return "ambience"
+
+		###########################################
+		#### Busca comandos en tercer lugar
 		## Recorremos cada una de las ordenes internas de melissa
 		for command in self.melissa.things["commands"]:
 			## Si el comando está en la frase recibida del STT
@@ -55,20 +69,6 @@ class NLUService:
 				## Retornará command para salir del metodo
 				return "command"
 		
-		###########################################
-		#### Busca dispositivos en segundo lugar
-		## Si se ha identificado un dispositivo
-		if self.match_device(intentPhrase) is not None:
-			## Retornará device para salir del metodo
-			return "device"
-
-		###########################################
-		#### Busca dispositivos en tercer lugar
-		## Si se ha identificado el dispositivo
-		if self.match_ambience(intentPhrase) is not None:
-			## Retornará device para salir del metodo
-			return "ambience"
-
 		## Por defecto retornará None para indicar que no se debe hacer nada
 		return None
 
