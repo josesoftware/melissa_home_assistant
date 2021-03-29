@@ -12,7 +12,8 @@ TRANSLATION_THING_COMMANDS = {
 	"attenuate": ["baja intensidad", "atenúa"],
 	"increase": ["sube intensidad", "aumenta"],
 	"maximum": ["máximo"],
-	"minimum": ["mínimo"]
+	"minimum": ["mínimo"],
+	"modify": ["modifica", "altera"]
 }
 
 ## Definimos Preposiciones linguisticas
