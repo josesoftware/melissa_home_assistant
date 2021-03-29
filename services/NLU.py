@@ -90,6 +90,9 @@ class NLUService:
 
 			## Recorremos la frase en cada uno de los canales de audio
 			for phrase in commandPhrases:
+				## Elimina espacios innecesarios
+				phrase = phrase.strip()
+
 				## Definimos una lista de posibles de ordenes
 				possibleCommands = []
 
