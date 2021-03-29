@@ -135,7 +135,7 @@ class NLUService:
 						## Comprobamos si es un comando simple 
 						## Recorremos cada comando
 						## Comprobamos si el comando tiene la misma cantidad de palabras que la frase
-						if count_words(sttInput) == count_words(possibleCommands[0]):
+						if count_words(phrase) == count_words(possibleCommands[0]):
 							## Componemos un intent basandonos en la plantilla
 							_intent = self.THING_INTENT_PATTERN["command"]
 
