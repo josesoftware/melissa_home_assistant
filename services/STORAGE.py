@@ -39,7 +39,7 @@ class StorageService:
 	def load_configfile(self):
 		## Declaramos variable de retorno
 		returnJson = None
-		
+
 		## Controla excepciones
 		try:
 			## Abre el fichero de configuración para leerlo
@@ -143,7 +143,7 @@ class StorageService:
 				logfile = open(os.path.join(self.ROOT_DIR, self.LOG_DIR, now.strftime("%Y-%m-%d") + '_logfile'), 'a')
 
 				## Escribe la línea en el log
-				logfile.write(now.strftime("%Y-%m-%d %H:%M:%S") + '\t' + title + ': ' + text)
+				logfile.write(now.strftime("%Y-%m-%d %H:%M:%S") + '\t' + title + ': ' + text + '\n')
 
 				## Cierra el fichero
 				logfile.close()
@@ -167,7 +167,7 @@ class StorageService:
 					logfile = open(os.path.join(self.ROOT_DIR, self.LOG_DIR, now.strftime("%Y-%m-%d") + '_debugfile'), 'a')
 
 					## Escribe la línea en el log
-					logfile.write(now.strftime("%Y-%m-%d %H:%M:%S") + '\t (Debug) ' + title + ': ' + text)
+					logfile.write(now.strftime("%Y-%m-%d %H:%M:%S") + '\t (Debug) ' + title + ': ' + text+ '\n')
 
 					## Cierra el fichero
 					logfile.close()
