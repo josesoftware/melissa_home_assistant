@@ -9,6 +9,7 @@ import json
 from services.TTS import TTSService
 from services.STT import STTService
 from services.NLU import NLUService
+from services.STORAGE import StorageService
 
 ## Importamos dirvers
 from drivers.database_driver import DatabaseDriver
@@ -32,19 +33,23 @@ class MelissaService:
 	#### Atributos estaticos
 	## Idicador de estado
 	wakeUp = False
+	## Indicador de modo debug
+	debugMode = False
 	## Indicador de bloqueo
 	locked = False
 	## Lenguaje de trabajo del servicio
 	language = None
+	## Fija los datos referentes al hogar
+	hive = {"id": "", "alias": "default"}
 
 	#### Atributos dinamicos
 	## Lista de cosas ( Things )
 	things = { 
+		"rooms": {},
 		"commands": {},
 		"ambiences": {},
 		"devices": {}
 	}
-
 	## Lista de WakeWords
 	wakeWords = [
 		"melissa"
@@ -67,15 +72,17 @@ class MelissaService:
 	tts = None
 	stt = None
 	nlu = None
+	stg = None
 
 	## Constructor
 	def __init__(self, language, hardware):
-		############# Instancia de los modulos
+		#################################################
 		## Definimos el lenguaje de trabajo
 		self.language = language
 		## Instanciamos el hardware
 		self.hardware = hardware
 
+		#################################################
 		## Instanciamos el driver de base de datos
 		self.driver_db = DatabaseDriver()
 		## Instanciamos el driver de audio
@@ -89,18 +96,32 @@ class MelissaService:
 		except:
 			self.driver_led = None
 
-		############# Instancia del resto de servicios
+		#################################################
 		## Instanciamos el servicio TTS
 		self.tts = TTSService(self)
 		## Instanciamos el servicio STT
 		self.stt = STTService(self)
 		## Instanciamos el servicio NLU
 		self.nlu = NLUService(self)
+		## Instanciamos el servicio de almacenamiento
+		self.stg = StorageService(self)
 
+		#################################################
+		## Recuperamos información dinámica de la máquina
+		self.hardware.set_hardware_info(self.stg.get_machine_hostname(), self.stg.get_machine_id())
+
+		#### TEST
+		self.debugMode = True
+
+		#################################################
+		## Carga la configuración de la máquina
+		self.stg.load_configfile()
+
+		#################################################
 		############# Debug
 		self.things["devices"]["ventilador"] = Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
 		self.things["devices"]["bombilla"] = Bolb("192.168.1.51", "AF:AF:AF:00:00:00", "bombilla")
-		self.things["ambiences"]["ambiente"] = Ambience("ambiente")
+		self.things["ambiences"]["relax"] = Ambience("relax")
 		self.things["commands"]["reproduce música"] = "test"
 
 	## Método que despierta al servicio

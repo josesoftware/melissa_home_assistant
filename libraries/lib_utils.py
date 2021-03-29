@@ -3,7 +3,7 @@
 ##########################################################
 
 ## Importamos modulos necesarios
-import re
+import re, hashlib
 
 ## Método que combina una matriz eliminando elementos duplicados
 def merge_array(array):
@@ -20,10 +20,23 @@ def merge_array(array):
 	## Retorna el resultado
 	return result
 
+## Método que encripta en MD5 un string
+def string_to_md5(inString):
+	## Generamos un hash del nombre "unknown"
+	hash_obj = hashlib.md5(inString)
+
+	## Retorna la cadena MD5
+	return hash_obj.hexdigest()
+
 ## Método que cuenta palabras de un string
 def count_words(inString):
 	## Retorna el recuento de palabras
 	return len(inString.split())
+
+## Métodoo que reemplaza un caracter de un string por otro
+def replace_char(inString, oldChar, newChar):
+	## Retorna el string modificando los caracteres deseados
+	return inString.replace(oldChar, newChar)
 
 ## Método que reliza un split con multiples delimitadores
 def multi_split(inString, delimitterList):

@@ -6,6 +6,7 @@
 import requests
 from libraries.lib_math import int_clamp as Clamp
 from objects.Device import IoTDevice as Parent
+from objects.Device import DeviceCategory as Category
 
 ## Clase que representa el módulo
 class Bolb(Parent):
@@ -19,6 +20,9 @@ class Bolb(Parent):
 		## Constructor del objeto padre 
 		Parent.__init__(self, address, mac, alias)
 
+		## Fijamos una categoria de tipo Light (Luz)
+		self.category = Category.Light
+
 		## Inicializamos acciones disponibles
 		self.init_intents()
   
@@ -29,7 +33,8 @@ class Bolb(Parent):
 			"turn on": { "request": "http://{address}/?light=on", "parameters": { "address": self.address } },
 			"turn off": { "request": "http://{address}/?light=off", "parameters": { "address": self.address } },
 			"color set": { "request": "http://{address}/?color={color}", "parameters": { "address": self.address, "color": self.color } },
-			"intensity set": { "request": "http://{address}/?intensity={intensity}", "parameters": { "address": self.address, "intensity": self.intensity } }
+			"intensity set": { "request": "http://{address}/?intensity={intensity}", "parameters": { "address": self.address, "intensity": self.intensity } },
+			"modify": { "request": "http://{address}/?intensity={intensity}&color={color}", "parameters": { "address": self.address, "intensity": self.intensity, "color": self.color } }
 		}
 
 	## Método que traduce un Intent en un request al dispositivo

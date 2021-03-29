@@ -4,8 +4,16 @@
 
 ## Importamos modulos necesarios
 import ipaddress
-import requests
 from objects import Thing
+from enum import Enum
+
+## Enumerado que determina la categoria de un dispositivo
+class DeviceCategory(Enum):
+	Light = 0,
+	Audio = 1,
+	Temperature = 2,
+	Abstract = 3
+
 
 ## Clase que representa el módulo
 class IoTDevice(Thing):
@@ -15,6 +23,7 @@ class IoTDevice(Thing):
 	macAddress = 'FF:FF:FF:FF:FF'
 	alias = 'Device'
 	isAlive = False
+	category = None
 
 	## Constructor
 	def __init__(self, address, mac, alias):
@@ -27,10 +36,8 @@ class IoTDevice(Thing):
 		self.macAddress = mac
 		## Fijamos el alias
 		self.alias = alias
-
-	## Método que ejecuta un request mediante GET
-	def get_request(self, request):
-		return requests.get(request)
+		## Se fija una categoria
+		self.category = DeviceCategory.Abstract
 
 	## Método que traduce un Intent en un request al dispositivo
 	def do_intent(self, intent):

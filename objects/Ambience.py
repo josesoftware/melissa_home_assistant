@@ -17,9 +17,10 @@ class Ambience(Thing):
 	## Atributos de estado
 	color = "#000000"
 	intensity = 1.0
+	volume = 100
 
 	## Constructor
-	def __init__(self, name):
+	def __init__(self, name, color="#000000", intensity=1.0, volume=100):
 		## Construimos el objeto padre
 		Thing.__init__(self)
 
@@ -37,7 +38,11 @@ class Ambience(Thing):
 			"attenuate": { "intent": "object_method", "parameters": { "method": "led_intensity", "argument": "attenuate" } },
 			"increase": { "intent": "object_method", "parameters": { "method": "led_intensity", "argument": "increase" } },
 			"maximum": { "intent": "object_method", "parameters": { "method": "led_intensity", "argument": "maximum" } },
-			"minimum": { "intent": "object_method", "parameters": { "method": "led_intensity", "argument": "minimum" } }
+			"minimum": { "intent": "object_method", "parameters": { "method": "led_intensity", "argument": "minimum" } },
+			"volume up": { "intent": "object_method", "parameters": { "method": "audio_volume", "argument": "up" } },
+			"volume down": { "intent": "object_method", "parameters": { "method": "audio_volume", "argument": "down" } },
+			"volume max": { "intent": "object_method", "parameters": { "method": "audio_volume", "argument": "maximum" } },
+			"volume min": { "intent": "object_method", "parameters": { "method": "audio_volume", "argument": "minimum" } }
 		}
 
 	## Método que ejecuta un intent
