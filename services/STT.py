@@ -59,7 +59,7 @@ class STTService:
 			self.FIRST_LVL_STT["thread"].append(None)
 
 			############# Vosk
-			self.SECOND_LVL_STT["decoder"].append(vosk.KaldiRecognizer(voskModel, self.melissa.driver_audio.READ_RATE))
+			self.SECOND_LVL_STT["decoder"].append(vosk.KaldiRecognizer(voskModel, self.melissa.hardware.INPUT_AUDIO_RATE))
 			self.SECOND_LVL_STT["result"].append(None)
 			self.SECOND_LVL_STT["thread"].append(None)
 			self.SECOND_LVL_STT["partial"].append(None)
