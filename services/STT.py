@@ -25,7 +25,7 @@ class STTService:
 	SECOND_LVL_STT = {"decoder": [], "thread": [], "result": [], "partial": [], "timeout": []}
 
 	##### Constantes
-	TIMEOUT_SECOND_LVL = 5 # segundos
+	TIMEOUT_SECOND_LVL = 10 # segundos
 
 	##### Lista de canales de audio
 	audioChannel = list()
@@ -44,7 +44,7 @@ class STTService:
 		sphinxConfig = Decoder.default_config()
 		sphinxConfig.set_string('-hmm', os.path.join(os.path.dirname(__file__), 'STT_Components/sphinx_models/', self.melissa.language["stt_model"]))
 		sphinxConfig.set_string('-dict', os.path.join(os.path.dirname(__file__), 'STT_Components/sphinx_models/', self.melissa.language["stt_model"] + '.dict'))
-		sphinxConfig.set_string('-kws', os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.list'))
+		sphinxConfig.set_string('-kws', os.path.join(os.path.dirname(__file__), 'STT_Components/', 'hotwords.list'))
 		## Definimos el modelo de lenguaje para Vosk
 		voskModel = vosk.Model(os.path.join(os.path.dirname(__file__), 'STT_Components/vosk_models/', self.melissa.language["stt_model"]))
 
@@ -153,9 +153,6 @@ class STTService:
 
 					## Lo manda al NLU
 					self.melissa.nlu.from_stt(phraseArray)
-					
-					### DEBUG
-					#print ("Lvl 2 STT Return: " + json.dumps(phraseArray, indent=4))
 
 	## Método privado que se dedica a buscar el wakeWord
 	def first_level_stt(self, index, data):
@@ -175,7 +172,7 @@ class STTService:
 			else:
 				## Si se detecta parte de una frase
 				## Si el resultado parcial guardado es distinto al nuevo obtenido
-				if self.SECOND_LVL_STT["partial"][index] != self.SECOND_LVL_STT["decoder"][index].PartialResult():
+				if str(self.SECOND_LVL_STT["partial"][index]) != self.SECOND_LVL_STT["decoder"][index].PartialResult():
 					## Fija el resultado parcial
 					self.SECOND_LVL_STT["partial"][index] = self.SECOND_LVL_STT["decoder"][index].PartialResult()
 
