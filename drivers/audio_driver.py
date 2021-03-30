@@ -7,7 +7,7 @@ import pyaudio
 
 class AudioDriver:
 	## Constantes del modulo de audio
-	READ_BUFFER = 1024
+	READ_BUFFER = 8192
 	READ_RATE = 16000
 	WRITE_RATE = 44000
 	WRITE_BUFFER = 1024
@@ -48,10 +48,14 @@ class AudioDriver:
 	## Método que lee del stream de audio input
 	def read(self):
 		## Retorna el fragmento del stream usando el buffer
-		return self.inputStream.read(self.READ_BUFFER)
+		if self.inputStream is not None:
+			return self.inputStream.read(self.READ_BUFFER)
+		else:
+			return []
 
 	## Método que escribe en el stream de audio outpu
 	def write(self, data):
 		## Escribe en el buffer de salida
-		self.outputStream.write(data)
+		if self.outputStream is not None:
+			self.outputStream.write(data)
     
