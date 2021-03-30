@@ -29,12 +29,13 @@ class Hardware:
 	machine = "md5-id"
 
 	## Constructor
-	def __init__(self, audioIn, audioOut, ledCount, audioInRate, audioInWidth):
+	def __init__(self, audioIn, audioOut, ledCount, audioInRate, audioInWidth, audioOutRate):
 		## Fijamos los atributos
 		self.INPUT_AUDIO_CHANNELS = audioIn
 		self.INPUT_AUDIO_RATE = audioInRate
 		self.INPUT_AUDIO_WIDTH = audioInWidth
 		self.OUTPUT_AUDIO_CHANNELS = audioOut
+		self.OUTPUT_AUDIO_RATE = audioOutRate
 		self.LED_COUNT = ledCount
 
 	## Método que recupera información de la máquina
@@ -47,4 +48,4 @@ class Hardware:
 	## Método estático que construye un hardware
 	@staticmethod
 	def Make(hat):
-		return Hardware(hat["audio-input"], hat["audio-output"], hat["led"], hat["input-rate"], hat["input-width"])
+		return Hardware(hat["audio-input"], hat["audio-output"], hat["led"], hat["input-rate"], hat["input-width"], hat["output-rate"])
