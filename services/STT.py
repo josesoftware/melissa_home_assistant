@@ -5,11 +5,11 @@
 ###########################################################
 
 ## Importacion de modulos necesarios
-import sys, os, time, json
+import sys, os, json, datetime
 ## Sphinx
-from pocketsphinx.pocketsphinx import *
+from pocketsphinx.pocketsphinx import Decoder
 from pocketsphinx import get_model_path
-from sphinxbase.sphinxbase import *
+## from sphinxbase.sphinxbase import *
 ## Vosk
 import vosk
 ## Para multithreading
@@ -22,7 +22,10 @@ class STTService:
 	FIRST_LVL_STT = {"decoder": [], "thread": [], "result": []}
 
 	##### Lista de variables del segundo nivel del STT
-	SECOND_LVL_STT = {"decoder": [], "thread": [], "result": []}
+	SECOND_LVL_STT = {"decoder": [], "thread": [], "result": [], "partial": [], "timeout": []}
+
+	##### Constantes
+	TIMEOUT_SECOND_LVL = 5 # segundos
 
 	##### Lista de canales de audio
 	audioChannel = list()
@@ -39,8 +42,8 @@ class STTService:
 	def start(self):
 		## Creamos una configuración para el decodificador Sphinx
 		sphinxConfig = Decoder.default_config()
-		sphinxConfig.set_string('-hmm', os.path.join(get_model_path(), self.melissa.language["stt_model"]))
-		sphinxConfig.set_string('-dict', os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.dict'))
+		sphinxConfig.set_string('-hmm', os.path.join(os.path.dirname(__file__), 'STT_Components/sphinx_models/', self.melissa.language["stt_model"]))
+		sphinxConfig.set_string('-dict', os.path.join(os.path.dirname(__file__), 'STT_Components/sphinx_models/', self.melissa.language["stt_model"] + '.dict'))
 		sphinxConfig.set_string('-kws', os.path.join(os.path.dirname(__file__), 'STT_Components/', self.melissa.language["keywords_file"] + '.list'))
 		## Definimos el modelo de lenguaje para Vosk
 		voskModel = vosk.Model(os.path.join(os.path.dirname(__file__), 'STT_Components/vosk_models/', self.melissa.language["stt_model"]))
@@ -59,6 +62,8 @@ class STTService:
 			self.SECOND_LVL_STT["decoder"].append(vosk.KaldiRecognizer(voskModel, self.melissa.driver_audio.READ_RATE))
 			self.SECOND_LVL_STT["result"].append(None)
 			self.SECOND_LVL_STT["thread"].append(None)
+			self.SECOND_LVL_STT["partial"].append(None)
+			self.SECOND_LVL_STT["timeout"].append(None)
 
 		## Mensaje de inicio
 		print("Speech recognition starts")
@@ -82,6 +87,8 @@ class STTService:
 			if not self.melissa.wakeUp:
 				## Purga la lista de procesos del nivel 2
 				self.SECOND_LVL_STT["result"] = [None] * self.melissa.hardware.INPUT_AUDIO_CHANNELS
+				self.SECOND_LVL_STT["partial"] = [None] * self.melissa.hardware.INPUT_AUDIO_CHANNELS
+				self.SECOND_LVL_STT["timeout"] = [None] * self.melissa.hardware.INPUT_AUDIO_CHANNELS
 
 				## Por cada canal de audio procesa un decoder
 				for i in range(len(self.audioChannel)):
@@ -118,11 +125,18 @@ class STTService:
 					# if secondStep["thread"][i] is None:
 					t = threading.Thread(target=self.second_level_stt, args=(i, self.audioChannel[i].tobytes()))
 					self.SECOND_LVL_STT["thread"][i] = t
+					self.SECOND_LVL_STT["timeout"][i] = datetime.datetime.now() + datetime.timedelta(0, self.TIMEOUT_SECOND_LVL)
 					t.start()
 
 				## Espera a que los subprocesos terminen
 				for th in self.SECOND_LVL_STT["thread"]:
 					th.join()
+
+				## Procesa los timeouts
+				for i in range(len(self.audioChannel)):
+					## Si excede el timeout fija un resultado vacio
+					if self.SECOND_LVL_STT["timeout"][i] < datetime.datetime.now():
+						self.SECOND_LVL_STT["result"][i] = ""
 
 				## Siempre que todos los STT Lvl 2 hayan contestado
 				if None not in self.SECOND_LVL_STT["result"]:
@@ -152,7 +166,20 @@ class STTService:
 
 	## Método privado que se dedica a procesar texto en segundo nivel
 	def second_level_stt(self, index, data):
-		## Si detecta una frase
-		if self.SECOND_LVL_STT["decoder"][index].AcceptWaveform(data):
-			## Recupera el resultado
-			self.SECOND_LVL_STT["result"][index] = self.SECOND_LVL_STT["decoder"][index].Result()
+		## Siempre que reciba datos
+		if data:
+			## Si detecta una frase
+			if self.SECOND_LVL_STT["decoder"][index].AcceptWaveform(data):
+				## Recupera el resultado
+				self.SECOND_LVL_STT["result"][index] = self.SECOND_LVL_STT["decoder"][index].Result()
+			else:
+				## Si se detecta parte de una frase
+				## Si el resultado parcial guardado es distinto al nuevo obtenido
+				if self.SECOND_LVL_STT["partial"][index] != self.SECOND_LVL_STT["decoder"][index].PartialResult():
+					## Fija el resultado parcial
+					self.SECOND_LVL_STT["partial"][index] = self.SECOND_LVL_STT["decoder"][index].PartialResult()
+
+					## Fija el timout de nuevo
+					self.SECOND_LVL_STT["timeout"][index] = datetime.datetime.now() + datetime.timedelta(0, self.TIMEOUT_SECOND_LVL)
+		else:
+			return
