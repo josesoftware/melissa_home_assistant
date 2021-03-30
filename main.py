@@ -13,7 +13,7 @@ from services.Melissa import MelissaService
 #############################################
 ## Instancia del hardware                  ##
 #############################################
-hardware = Hardware(1, 2, 0)## Hardware.Make(RPIHat.Respeaker4Mic)
+hardware = Hardware.Make(RPIHat.Respeaker4Mic)
 
 ##############################################
 ## Instanciamos servicios					##
