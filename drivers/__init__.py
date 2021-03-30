@@ -9,14 +9,16 @@ from libraries.lib_utils import replace_char
 ## Enumeramos los tipos de hardware
 class RPIHat:
 	## Atributos
-	Respeaker2Mic = {"audio-input": 2, "audio-output": 2, "led": 3}
-	Respeaker4Mic = {"audio-input": 4, "audio-output": 2, "led": 12}
-	Respeaker6Mic = {"audio-input": 6, "audio-output": 2, "led": 12}
+	Respeaker2Mic = {"audio-input": 2, "audio-output": 2, "led": 3, "input-rate": 16000, "input-width": 2, "output-rate": 44100}
+	Respeaker4Mic = {"audio-input": 4, "audio-output": 2, "led": 12, "input-rate": 16000, "input-width": 2, "output-rate": 44100}
+	Respeaker6Mic = {"audio-input": 8, "audio-output": 2, "led": 12, "input-rate": 16000, "input-width": 2, "output-rate": 44100}
 
 ## Clase que representa un objeto de tipo hardware, el sistema se basará en el hardware para operar
 class Hardware:
 	## Atributos constantes del hardware
 	INPUT_AUDIO_CHANNELS = 0
+	INPUT_AUDIO_RATE = 0
+	INPUT_AUDIO_WIDTH = 0
 	OUTPUT_AUDIO_CHANNELS = 0
 	LED_COUNT = 0
 
@@ -27,9 +29,11 @@ class Hardware:
 	machine = "md5-id"
 
 	## Constructor
-	def __init__(self, audioIn, audioOut, ledCount):
+	def __init__(self, audioIn, audioOut, ledCount, audioInRate, audioInWidth):
 		## Fijamos los atributos
 		self.INPUT_AUDIO_CHANNELS = audioIn
+		self.INPUT_AUDIO_RATE = audioInRate
+		self.INPUT_AUDIO_WIDTH = audioInWidth
 		self.OUTPUT_AUDIO_CHANNELS = audioOut
 		self.LED_COUNT = ledCount
 
@@ -43,4 +47,4 @@ class Hardware:
 	## Método estático que construye un hardware
 	@staticmethod
 	def Make(hat):
-		return Hardware(hat["audio-input"], hat["audio-output"], hat["led"])
+		return Hardware(hat["audio-input"], hat["audio-output"], hat["led"], hat["input-rate"], hat["input-width"])

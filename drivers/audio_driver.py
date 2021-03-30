@@ -8,8 +8,6 @@ import pyaudio
 class AudioDriver:
 	## Constantes del modulo de audio
 	READ_BUFFER = 8192
-	READ_RATE = 16000
-	WRITE_RATE = 44000
 	WRITE_BUFFER = 1024
 
 	## Instancia de pyAudio
@@ -25,11 +23,11 @@ class AudioDriver:
 		self.pyAudio = pyaudio.PyAudio()
 
 		## Inicializamos el stream de input
-		self.inputStream = self.pyAudio.open(format=pyaudio.paInt16, channels=hardware.INPUT_AUDIO_CHANNELS, rate=self.READ_RATE, input=True, frames_per_buffer=self.READ_BUFFER)
+		self.inputStream = self.pyAudio.open(format=self.pyAudio.get_format_from_width(hardware.INPUT_AUDIO_WIDTH), channels=hardware.INPUT_AUDIO_CHANNELS, rate=hardware.INPUT_AUDIO_RATE, input=True, frames_per_buffer=self.READ_BUFFER)
 		self.inputStream.start_stream()
 
 		## Inicializamos el stream de output
-		self.outputStream = self.pyAudio.open(format=pyaudio.paInt16, channels=hardware.OUTPUT_AUDIO_CHANNELS, rate=self.WRITE_RATE, output=True)
+		self.outputStream = self.pyAudio.open(format=pyaudio.paInt16, channels=hardware.OUTPUT_AUDIO_CHANNELS, rate=hardware.OUTPUT_AUDIO_RATE, output=True)
 		self.outputStream.start_stream()
 
 	## Destructor
