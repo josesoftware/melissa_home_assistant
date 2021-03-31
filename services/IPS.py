@@ -36,14 +36,14 @@ class IntentProcessorService:
 
 					except DeviceTargetMismatchException as e:
 						## Escribe en el log el error
-						self.melissa.ips.log_debug_write("Intent device mismatch target: '{target}', sended to: '{receiver}'".format(target=e.target, receiver=e.receiver), 'Device intent mismatch')
+						self.melissa.stg.log_debug_write("Intent device mismatch target: '{target}', sended to: '{receiver}'".format(target=e.target, receiver=e.receiver), 'Device intent mismatch')
 
 						## Pasa al siguiente ciclo
 						continue
 
 					except Exception as e:
 						## Escribe en el log el error
-						self.melissa.ips.log_debug_write("Unknown error processing device intent on device: '{target}', error: '{error}'".format(target=intent['device'], error=e), 'Device intent error')
+						self.melissa.stg.log_debug_write("Unknown error processing device intent on device: '{target}', error: '{error}'".format(target=intent['device'], error=e), 'Device intent error')
 
 						## Pasa al siguiente ciclo
 						continue
@@ -61,7 +61,7 @@ class IntentProcessorService:
 				## Si no se recogonoce el tipo de thing al que va dirigido el intent
 				else:
 					## Escribe en el log el error
-					self.melissa.ips.log_debug_write("Unknown intent: '{intent}'".format(intent=intent), 'Not recognizer intent')
+					self.melissa.stg.log_debug_write("Unknown intent: '{intent}'".format(intent=intent), 'Not recognizer intent')
 
 					## Pasa al siguiente ciclo
 					continue
