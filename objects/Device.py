@@ -81,9 +81,9 @@ class IoTDevice(Thing):
 			_deviceCategory = None
 
 			## Compara enumerados
-			for category in DeviceCategory:
+			for category, value in DeviceCategory:
 				## Si la categoria obtenida del JSON es encontrada
-				if category == json_device["category"]:
+				if value == json_device["category"]:
 					## Fija la categoria
 					_deviceCategory = category
 					## Sale del bucle
