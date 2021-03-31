@@ -10,6 +10,7 @@ from services.TTS import TTSService
 from services.STT import STTService
 from services.NLU import NLUService
 from services.STG import StorageService
+from services.IPS import IntentProcessorService
 
 ## Importamos dirvers
 from drivers.database_driver import DatabaseDriver
@@ -104,7 +105,7 @@ class HomeAssistantService:
 		## Instanciamos el servicio NLU ( Natural Language Understanding Service )
 		self.nlu = NLUService(self)
 		## Instanciamos el servicio IPS ( Intent proccessor Service )
-		self.ips = NLUService(self)
+		self.ips = IntentProcessorService(self)
 		## Instanciamos el servicio de almacenamiento
 		self.stg = StorageService(self)
 
