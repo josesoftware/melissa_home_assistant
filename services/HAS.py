@@ -24,7 +24,7 @@ except:
     pass
 
 ## Importamos objetos
-from objects.Switch import Switch
+from objects.Device import IoTDevice
 from objects.Bolb import Bolb
 from objects.Ambience import Ambience
 
@@ -122,8 +122,8 @@ class HomeAssistantService:
 
 		#################################################
 		############# Debug
-		self.things["devices"]["ventilador"] = Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
-		self.things["devices"]["bombilla"] = Bolb("192.168.1.51", "AF:AF:AF:00:00:00", "bombilla")
+		self.things["devices"]["ventilador"] = IoTDevice.from_json('{"alias": "ventilador", "address": "192.168.1.50", "mac": "FF:FF:FF:00:00:00", "category": 2, "properties": [], "intents": [ { "turn on": { "request": "http://{address}/?relay=on", "parameters": { "address": "255.255.255.255" } } }, { "turn off": { "request": "http://{address}/?relay=off", "parameters": { "address": "255.255.255.255" } } } ]}') # Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
+		# self.things["devices"]["bombilla"] = Bolb("192.168.1.51", "AF:AF:AF:00:00:00", "bombilla")
 		self.things["ambiences"]["relax"] = Ambience("relax")
 		self.things["commands"]["reproduce música"] = "test"
 
