@@ -2,6 +2,8 @@
 ## Servicio que se dedica a traducir voz en texto        ##
 ##-------------------------------------------------------##
 ## Basado en el STT PocketSphinx no requiere internet    ##
+##-------------------------------------------------------##
+## Basado en el STT Vosk no requiere internet    		 ##
 ###########################################################
 
 ## Importacion de modulos necesarios

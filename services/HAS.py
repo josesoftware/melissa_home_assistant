@@ -9,7 +9,7 @@ import json
 from services.TTS import TTSService
 from services.STT import STTService
 from services.NLU import NLUService
-from services.STORAGE import StorageService
+from services.STG import StorageService
 
 ## Importamos dirvers
 from drivers.database_driver import DatabaseDriver
@@ -29,7 +29,7 @@ from objects.Ambience import Ambience
 
 
 ## Definición de la clase
-class MelissaService:
+class HomeAssistantService:
 	#### Atributos estaticos
 	## Idicador de estado
 	wakeUp = False
@@ -45,7 +45,6 @@ class MelissaService:
 	#### Atributos dinamicos
 	## Lista de cosas ( Things )
 	things = { 
-		"rooms": {},
 		"commands": {},
 		"ambiences": {},
 		"devices": {}
@@ -73,6 +72,7 @@ class MelissaService:
 	stt = None
 	nlu = None
 	stg = None
+	ips = None
 
 	## Constructor
 	def __init__(self, language, hardware):
@@ -97,12 +97,14 @@ class MelissaService:
 			self.driver_led = None
 
 		#################################################
-		## Instanciamos el servicio TTS
+		## Instanciamos el servicio TTS ( Text To Speech Service)
 		self.tts = TTSService(self)
-		## Instanciamos el servicio STT
+		## Instanciamos el servicio STT ( Speech To Text Service )
 		self.stt = STTService(self)
-		## Instanciamos el servicio NLU
+		## Instanciamos el servicio NLU ( Natural Language Understanding Service )
 		self.nlu = NLUService(self)
+		## Instanciamos el servicio IPS ( Intent proccessor Service )
+		self.ips = NLUService(self)
 		## Instanciamos el servicio de almacenamiento
 		self.stg = StorageService(self)
 

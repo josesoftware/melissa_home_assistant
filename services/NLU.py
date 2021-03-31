@@ -41,8 +41,8 @@ class NLUService:
 		## Pone al servicio melissa en modo pensar
 		# self.melissa.thinking()
 
-		## Retorna el intent detectado
-		self.melissa.from_nlu(self.match_intents(sttInput))
+		## Retorna la lista de intents detectada
+		self.melissa.IPS.from_nlu(self.match_intents(sttInput))
 
 	## Método que determina con que tipo de thing se desea tratar
 	def match_thing(self, intentPhrase):
