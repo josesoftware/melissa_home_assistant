@@ -135,12 +135,12 @@ class IoTDevice(Thing):
 		
 		################## Parametros especiales
 		## Direccion IP
-		if 'ip-address' in returnIntent['parameters']:
-			returnIntent['parameters']['ip-address'] = str(self.address)
+		if 'ipaddress' in returnIntent['parameters']:
+			returnIntent['parameters']['ipaddress'] = str(self.address)
 
 		## Direccion Mac
-		if 'mac-address' in returnIntent['parameters']:
-			returnIntent['parameters']['mac-address'] = self.macAddress
+		if 'macaddress' in returnIntent['parameters']:
+			returnIntent['parameters']['macaddress'] = self.macAddress
 
 		## Direccion Alias
 		if 'alias' in returnIntent['parameters']:
