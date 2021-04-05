@@ -64,12 +64,14 @@ class IntentProcessorService:
 
 					## Pasa al siguiente ciclo
 					continue
+	
+	
+
+		## Duerme el servicio melissa una vez realiza todas las tareas
+		self.melissa.sleep()
 
 	## Método que lleva a cabo un intent de ejecución
 	def do_intent(self, intentToDo):
 		## DEBUG
 		json.dumps(intentToDo, indent=4)
 		print (intentToDo)
-
-		## Duerme el servicio melissa una vez realiza todas las tareas
-		self.melissa.sleep()
