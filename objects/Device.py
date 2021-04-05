@@ -98,12 +98,10 @@ class IoTDevice(Thing):
 
 			## Recorre la lista de intents
 			for intent in json_device["intents"]:
-				## Añade el intent a la lista
-				device.intents[intent] = {}
-
-				## Recorre el contenido del intent
-				for key, value in intent:
-					device.intents[intent][key] = value
+				## Recorre el key, value de cada intent
+				for key, value in intent.items():
+					## Añade el intent a la lista
+					device.intents[key] = value
 
 			## Retorna el dispositivo
 			return device
@@ -133,6 +131,20 @@ class IoTDevice(Thing):
 
 			## Fija los parametros al intent de retorno
 			returnIntent['parameters'][key] = value
+
+		
+		################## Parametros especiales
+		## Direccion IP
+		if 'ip-address' in returnIntent['parameters']:
+			returnIntent['parameters']['ip-address'] = self.address
+
+		## Direccion Mac
+		if 'mac-address' in returnIntent['parameters']:
+			returnIntent['parameters']['mac-address'] = self.macAddress
+
+		## Direccion Alias
+		if 'alias' in returnIntent['parameters']:
+			returnIntent['parameters']['alias'] = self.alias
 
 		## Retorna el intent de ejecución
 		return returnIntent

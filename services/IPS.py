@@ -19,19 +19,18 @@ class IntentProcessorService:
 
 	## Método invocado desde el NLU
 	def from_nlu(self, intents):
+		## DEBUG
+		json.dumps(intents, indent=4)
+
 		## Recorre la lista de intents
 		for intent in intents:
 			## Siempre que el intent no venga vacío
 			if intent:
-
-				## DEBUG
-				json.dumps(intent, indent=4)
-
 				## Si el intent va dirigido a un dispositivo
 				if 'device' in intent:
 					## Controla excepciones
 					try:
-						## Recupera el in
+						## Recupera el intent de acción y lo lleva a cabo
 						self.do_intent(self.melissa.things["devices"][intent['device']].do_intent(intent))
 
 					except DeviceTargetMismatchException as e:
@@ -70,6 +69,7 @@ class IntentProcessorService:
 	def do_intent(self, intentToDo):
 		## DEBUG
 		json.dumps(intentToDo, indent=4)
+		print (intentToDo)
 
 		## Duerme el servicio melissa una vez realiza todas las tareas
 		self.melissa.sleep()
