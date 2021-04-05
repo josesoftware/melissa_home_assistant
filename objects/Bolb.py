@@ -6,7 +6,7 @@
 import requests
 from libraries.lib_math import int_clamp as Clamp
 from objects.Device import IoTDevice as Parent
-from objects.Device import DeviceCategory as Category
+from objects import ThingCategory
 
 ## Clase que representa el módulo
 class Bolb(Parent):
@@ -21,7 +21,7 @@ class Bolb(Parent):
 		Parent.__init__(self, address, mac, alias)
 
 		## Fijamos una categoria de tipo Light (Luz)
-		self.category = Category.Light
+		self.category = ThingCategory.Categories["Light"]
 
 		## Inicializamos acciones disponibles
 		self.init_intents()
