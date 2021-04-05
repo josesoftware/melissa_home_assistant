@@ -103,17 +103,19 @@ class IoTDevice(Thing):
 		returnIntent = self.intents[intent['intent']]
 
 		## Recorre los parámetros del intent para realizar la modificación
-		for key, value in intent['parameters']:
+		for key, value in intent['parameters'].items():
+			## Fija los parametros al intent de retorno
+			returnIntent['parameters'][key] = value
+
+
+		## Recorre los parámetros del intent de retorno para modificar las propiedades del objeto
+		for key, value in returnIntent['parameters'].items():
 			## Si existe una propiedad nombrada igual que el parametro
 			if key in self.properties:
 				## Modifica la propiedad
 				self.properties[key] = value
 
-			## Fija los parametros al intent de retorno
-			returnIntent['parameters'][key] = value
-
-		
-		################## Parametros especiales
+		################## Parametros Reservados
 		## Direccion IP
 		if 'ipaddress' in returnIntent['parameters']:
 			returnIntent['parameters']['ipaddress'] = str(self.address)
