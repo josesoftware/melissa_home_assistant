@@ -20,6 +20,10 @@ def merge_array(array):
 	## Retorna el resultado
 	return result
 
+## Método que delimita el valor de un integer
+def int_clamp(value, maxVal, minVal):
+	return max(min(value, maxVal), minVal)
+
 ## Método que encripta en MD5 un string
 def string_to_md5(inString):
 	## Generamos un hash del nombre "unknown"

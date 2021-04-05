@@ -113,7 +113,7 @@ class IoTDevice(Thing):
 			## Si existe una propiedad nombrada igual que el parametro
 			if key in self.properties:
 				## Modifica la propiedad
-				self.properties[key] = value
+				self.properties[key]['value'] = value
 
 		################## Parametros Reservados
 		## Direccion IP
