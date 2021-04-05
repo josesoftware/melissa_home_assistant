@@ -5,14 +5,14 @@
 ###############################################################
 
 ## Importamos metodos de la libreria de utilidades
-from libraries.lib_utils import count_words, multi_split, merge_array
+from libraries.lib_utils import count_words, multi_split, merge_array, int_clamp
 
 ## Importamos diccionarios
 from dictionaries import translations as TRANSLATIONS
 from dictionaries.dictionary import COLOR_DICTIONARY as COLORS
 
-### DEBUG
-import json
+## Importamos modulos
+import json, re
 
 ## Definición del objeto
 class NLUService:
@@ -358,7 +358,10 @@ class NLUService:
 	## Método que busca parametros de un intent en una frase
 	def match_intent_params(self, category, thing, intent, phrase):
 		## Definimos parametros de retorno
-		ReturnParams = { }
+		returnParams = { }
+
+		## Recupera la lista de enteros en la frase
+		integersInPhrase = re.findall(r'\d+', phrase)
 
 		## Recorremos cada uno de los parametros del intet
 		for parameter in self.melissa.things[category][thing].intents[intent]["parameters"]:
@@ -368,10 +371,25 @@ class NLUService:
 				for color in TRANSLATIONS.TRANSLATION_COLOR:
 					## Si el color esta en la frase
 					if color in phrase:
-						ReturnParams["color"] = COLORS[TRANSLATIONS.TRANSLATION_COLOR[color]]["HEX"]
+						returnParams["color"] = COLORS[TRANSLATIONS.TRANSLATION_COLOR[color]]["HEX"]
+
+			## Si el parametro es intensidad
+			if parameter == "intensity":
+				## Si la lista de enteros es igual a 1
+				if len(integersInPhrase) == 1:
+					## Fijamose la intensidad
+					returnParams["intensity"] = int_clamp(integersInPhrase[0], (self.melissa.things[category][thing].properties['intensity']['min'] if 'min' in self.melissa.things[category][thing].properties['intensity'] else 0), (self.melissa.things[category][thing].properties['intensity']['max'] if 'max' in self.melissa.things[category][thing].properties['intensity'] else 100))
+
+			## Si el parametro es volumen
+			if parameter == "volume":
+				## Si la lista de enteros es igual a 1
+				if len(integersInPhrase) == 1:
+					## Fijamose la intensidad
+					returnParams["volume"] = int_clamp(integersInPhrase[0], (self.melissa.things[category][thing].properties['volume']['min'] if 'min' in self.melissa.things[category][thing].properties['volume'] else 0), (self.melissa.things[category][thing].properties['volume']['max'] if 'max' in self.melissa.things[category][thing].properties['volume'] else 100))
+
 
 		## Retornamos resultados
-		return ReturnParams
+		return returnParams
 
 	###### Métodos que operan con Ambientes ( Ambiences )
 	## Método que busca un intent de ambiente en una frase
