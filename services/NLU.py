@@ -385,7 +385,7 @@ class NLUService:
 						## Si el color esta en la frase
 						if key in phrase:
 							## Fijamose el volumen
-							returnParams["volume"] = value * 10
+							returnParams["intensity"] = value * 10
 
 			## Si el parametro es volumen
 			if parameter == "volume":
