@@ -7,10 +7,16 @@ import json
 from collections import namedtuple
 from string import Formatter
 
+## Clase que determina la categoria de un Thing
+class ThingCategory:
+	## Lista de categorias
+	Categories = { "Light": 0, "Audio": 1, "Video": 2, "Temperature": 3, "Abstract": 4}
+
 ## Clase que representa un Thing
 class Thing:
 	## Atributo alias del thing
 	alias = 'Thing'
+	category = ThingCategory.Categories["Abstract"]
 
 	## Definimos intents disponibles
 	intents = { }

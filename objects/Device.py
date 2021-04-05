@@ -4,17 +4,9 @@
 
 ## Importamos modulos necesarios
 import ipaddress, json
-from enum import Enum
 
 ## Importa modulo del objeto padre
-from objects import Thing
-
-## Enumerado que determina la categoria de un dispositivo
-class DeviceCategory(Enum):
-	Light = 0,
-	Audio = 1,
-	Temperature = 2,
-	Abstract = 3
+from objects import Thing, ThingCategory
 
 #################################################
 ## Si el formato del JSON es erróneo
@@ -56,7 +48,7 @@ class IoTDevice(Thing):
 	properties = { }
 
 	## Constructor
-	def __init__(self, address='255.255.255.255', mac='FF:FF:FF:FF:FF', alias='Thing Device', properties={}, category=DeviceCategory.Abstract):
+	def __init__(self, address='255.255.255.255', mac='FF:FF:FF:FF:FF', alias='Thing Device', properties={}, category=ThingCategory.Categories["Abstract"]):
 		# Constructor del objeto padre 
 		Thing.__init__(self)
 
@@ -77,24 +69,12 @@ class IoTDevice(Thing):
 			## Recuepera los datos del objeto desde el JSON
 			json_device = json.loads(json_string)
 
-			## Definimos una categoria para el dispositivo
-			_deviceCategory = None
-
-			## Compara enumerados
-			for name, member in DeviceCategory.__members__.items():
-				## Si la categoria obtenida del JSON es encontrada
-				if name == json_device["category"]:
-					## Fija la categoria
-					_deviceCategory = member
-					## Sale del bucle
-					break
-
-			## Si no se ha recuperado una categoria, se retorna error
-			if _deviceCategory is None:
+			## Si no esta definida la categoria, se retorna error
+			if json_device["category"] not in ThingCategory.Categories:
 				raise DeviceCategoryNotDefinedException(json_device["category"])
 
 			## Construye la instancia de un dispositivo basandose en los datos del JSON
-			device = IoTDevice(address=json_device["address"], mac=json_device["mac"], alias=json_device["alias"], properties=json_device["properties"].copy(), category=_deviceCategory)
+			device = IoTDevice(address=json_device["address"], mac=json_device["mac"], alias=json_device["alias"], properties=json_device["properties"].copy(), category=ThingCategory.Categories[json_device["category"]])
 
 			## Recorre la lista de intents
 			for intent in json_device["intents"]:

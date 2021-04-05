@@ -122,7 +122,7 @@ class HomeAssistantService:
 
 		#################################################
 		############# Debug
-		self.things["devices"]["ventilador"] = IoTDevice.from_json('{"alias": "ventilador", "address": "192.168.1.50", "mac": "FF:FF:FF:00:00:00", "category": "Temperature", "properties": [], "intents": [ { "turn on": { "request": "http://{ipaddress}/?relay=on", "parameters": { "ipaddress": "255.255.255.255" } } }, { "turn off": { "request": "http://{ipaddress}/?relay=off", "parameters": { "ipaddress": "255.255.255.255" } } } ]}') # Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
+		self.things["devices"]["ventilador"] = IoTDevice.from_json('{"alias": "ventilador", "address": "192.168.1.50", "mac": "FF:FF:FF:00:00:00", "category": "Temperature", "properties": [{"status": "off"}], "intents": [ { "turn on": { "request": "http://{ipaddress}/?relay=on", "parameters": { "ipaddress": "255.255.255.255", "status": "on" } } }, { "turn off": { "request": "http://{ipaddress}/?relay=off", "parameters": { "ipaddress": "255.255.255.255", "status": "off" } } } ]}') # Switch("192.168.1.50", "FF:FF:FF:00:00:00", "ventilador")
 		# self.things["devices"]["bombilla"] = Bolb("192.168.1.51", "AF:AF:AF:00:00:00", "bombilla")
 		self.things["ambiences"]["relax"] = Ambience("relax")
 		self.things["commands"]["reproduce música"] = "test"
