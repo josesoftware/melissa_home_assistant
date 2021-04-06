@@ -378,7 +378,7 @@ class NLUService:
 				## Si la lista de enteros es igual a 1
 				if len(integersInPhrase) == 1:
 					## Fijamose la intensidad
-					returnParams["intensity"] = int_clamp(integersInPhrase[0], (self.melissa.things[category][thing].properties['intensity']['min'] if 'min' in self.melissa.things[category][thing].properties['intensity'] else 0), (self.melissa.things[category][thing].properties['intensity']['max'] if 'max' in self.melissa.things[category][thing].properties['intensity'] else 100))
+					returnParams["intensity"] = integersInPhrase[0] #int_clamp(integersInPhrase[0], (self.melissa.things[category][thing].properties['intensity']['min'] if 'min' in self.melissa.things[category][thing].properties['intensity'] else 0), (self.melissa.things[category][thing].properties['intensity']['max'] if 'max' in self.melissa.things[category][thing].properties['intensity'] else 100))
 				else:
 					## Fijamose la intensidad
 					for key, value in TRANSLATIONS.TRANSLATION_NUMBER.items():
@@ -392,7 +392,7 @@ class NLUService:
 				## Si la lista de enteros es igual a 1
 				if len(integersInPhrase) == 1:
 					## Fijamose el volumen
-					returnParams["volume"] = int_clamp(integersInPhrase[0], (self.melissa.things[category][thing].properties['volume']['min'] if 'min' in self.melissa.things[category][thing].properties['volume'] else 0), (self.melissa.things[category][thing].properties['volume']['max'] if 'max' in self.melissa.things[category][thing].properties['volume'] else 100))
+					returnParams["volume"] = integersInPhrase[0] #int_clamp(integersInPhrase[0], (self.melissa.things[category][thing].properties['volume']['min'] if 'min' in self.melissa.things[category][thing].properties['volume'] else 0), (self.melissa.things[category][thing].properties['volume']['max'] if 'max' in self.melissa.things[category][thing].properties['volume'] else 100))
 				else:
 					## Recorremos la lista de colores
 					for key, value in TRANSLATIONS.TRANSLATION_NUMBER.items():

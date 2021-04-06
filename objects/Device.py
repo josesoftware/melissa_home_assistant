@@ -5,6 +5,9 @@
 ## Importamos modulos necesarios
 import ipaddress, json
 
+## Importa utilidades
+from libraries.lib_utils import int_clamp
+
 ## Importa modulo del objeto padre
 from objects import Thing, ThingCategory
 
@@ -112,21 +115,58 @@ class IoTDevice(Thing):
 		for key, value in returnIntent['parameters'].items():
 			## Si existe una propiedad nombrada igual que el parametro
 			if key in self.properties:
-				## Modifica la propiedad
-				self.properties[key]['value'] = value
+				## Si el parametro del intent es de tipo entero
+				if returnIntent['parameters']['type'] == "integer":
+					## Si el parametro del intent se debe agregar
+					if returnIntent['parameters']['action'] == "add":
+						## Modifica la propiedad
+						self.properties[key]['value'] = int_clamp(int(self.properties[key]['value']) + int(value), (self.properties[key]['min'] if 'min' in self.properties[key] else 0), (self.properties[key]['max'] if 'max' in self.properties[key] else 100))
+						## Modifica el intent
+						returnIntent['parameters'][key] = self.properties[key]['value']
 
-		################## Parametros Reservados
+					## Si se debe fijar
+					elif returnIntent['parameters']['action'] == "set":
+						## Modifica la propiedad
+						self.properties[key]['value'] = int_clamp(int(value), (self.properties[key]['min'] if 'min' in self.properties[key] else 0), (self.properties[key]['max'] if 'max' in self.properties[key] else 100))
+
+				## Si es de tipo string
+				elif returnIntent['parameters']['type'] == "string":
+					## Si el parametro del intent se debe agregar
+					if returnIntent['parameters']['action'] == "add":
+						## Modifica la propiedad
+						self.properties[key]['value'] = str(self.properties[key]['value']) + str(value)
+						## Modifica el intent
+						returnIntent['parameters'][key] = self.properties[key]['value']
+					
+					## Si se debe fijar
+					elif returnIntent['parameters']['action'] == "set":
+						## Modifica la propiedad
+						self.properties[key]['value'] = str(value)
+				
+				
+		###################### Purga de datos inamovibles
+		## Elimina Tags innecesarios
+		if 'type' in returnIntent['parameters']:
+			## Elimina la key
+			del returnIntent['parameters']['type']
+
+		if 'action' in returnIntent['parameters']:
+			## Elimina la key
+			del returnIntent['parameters']['action']
+
+
+		###################### Parametros Reservados
 		## Direccion IP
 		if 'ipaddress' in returnIntent['parameters']:
 			returnIntent['parameters']['ipaddress'] = str(self.address)
 
 		## Direccion Mac
 		if 'macaddress' in returnIntent['parameters']:
-			returnIntent['parameters']['macaddress'] = self.macAddress
+			returnIntent['parameters']['macaddress'] = str(self.macAddress)
 
 		## Direccion Alias
 		if 'alias' in returnIntent['parameters']:
-			returnIntent['parameters']['alias'] = self.alias
+			returnIntent['parameters']['alias'] = str(self.alias)
 
 		## Retorna el intent de ejecución
 		return returnIntent
