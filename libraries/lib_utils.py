@@ -21,7 +21,7 @@ def merge_array(array):
 	return result
 
 ## Método que delimita el valor de un integer
-def int_clamp(value, maxVal, minVal):
+def int_clamp(value, minVal, maxVal):
 	return max(min(value, maxVal), minVal)
 
 ## Método que encripta en MD5 un string
