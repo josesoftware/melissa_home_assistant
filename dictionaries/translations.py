@@ -21,6 +21,7 @@ TRANSLATION_THING_COMMANDS = {
 ## Definimos Preposiciones linguisticas
 TRANSLATION_PREPOSITIONS = [
 	" a ",
+	" al ",
 	" ante ",
 	" bajo ",
 	" cabe ",
