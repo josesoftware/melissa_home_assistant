@@ -9,10 +9,12 @@ TRANSLATION_THING_COMMANDS = {
 	"color set": ["cambia color", "cambiar color"],
 	"intensity set": ["cambia intensidad", "cambiar intensidad"],
 	"ambience": ["ambiente"],
-	"attenuate": ["baja intensidad", "atenúa"],
-	"increase": ["sube intensidad", "aumenta"],
-	"maximum": ["máximo"],
-	"minimum": ["mínimo"],
+	"drecease intensity": ["decrementa intensidad", "atenúa intensidad"],
+	"increase intensity": ["incrementa intensidad", "aumenta intensidad"],
+	"intensity down": ["baja intensidad"],
+	"intensity up": ["sube intensidad"],
+	"intensity max": ["intensidad máximo", "intensidad máxima"],
+	"intensity min": ["intensidad mínimo", "intensidad mínima"],
 	"modify": ["modifica", "altera"]
 }
 
