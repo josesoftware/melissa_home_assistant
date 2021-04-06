@@ -63,6 +63,8 @@ class IoTDevice(Thing):
 		self.alias = alias
 		## Se fija una categoria
 		self.category = category
+		## Se fijan las propiedades
+		self.properties = properties
 
 	@staticmethod
 	## Método estático que devuelve un objeto de tipo device
