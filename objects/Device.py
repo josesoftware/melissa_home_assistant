@@ -105,7 +105,7 @@ class IoTDevice(Thing):
 			raise DeviceTargetMismatchException(intent['device'], self.alias)
 
 		## Recoge la plantilla del intent
-		returnIntent = self.intents[intent['intent']]
+		returnIntent = self.intents[intent['intent']].copy()
 
 		## Recorre los parámetros del intent para realizar la modificación
 		for key, value in intent['parameters'].items():
