@@ -144,17 +144,6 @@ class IoTDevice(Thing):
 					elif returnIntent['parameters']['action'] == "set":
 						## Modifica la propiedad
 						self.properties[key]['value'] = str(value)
-				
-				
-		###################### Purga de datos inamovibles
-		## Elimina Tags innecesarios
-		if 'type' in returnIntent['parameters']:
-			## Elimina la key
-			del returnIntent['parameters']['type']
-
-		if 'action' in returnIntent['parameters']:
-			## Elimina la key
-			del returnIntent['parameters']['action']
 
 
 		###################### Parametros Reservados

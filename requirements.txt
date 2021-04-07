@@ -1,0 +1,9 @@
+PyAudio==0.2.11
+spidev==3.5
+pocketsphinx==0.1.15
+numpy==1.19.4
+gpiozero==1.5.1
+vosk==0.3.21
+requests==2.21.0
+modules==1.0.0
+mysql_connector_repackaged==0.3.1
