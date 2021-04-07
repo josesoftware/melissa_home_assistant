@@ -74,3 +74,4 @@ class IntentProcessorService:
 	def do_intent(self, intentToDo):
 		## Escribe en el log el error
 		self.melissa.stg.log_debug_write("Executing intent: '{intentToDo}'".format(intentToDo=intentToDo), 'Intent Processor Service')
+		
