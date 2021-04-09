@@ -49,7 +49,7 @@ class TTSService:
 				self.melissa.module_led.speak()
 
 			## Lanzamos el TTS con un mensaje de confirmación correcta seleccionado al azar
-			process = subprocess.Popen((os.path.dirname(__file__) + '/TTS/speak.sh "{0}" {1}'.format(self.commonMessages["done_messages"][self.melissa.language["key"]][message_index], self.melissa.language["tts_code"])), shell=True, stdout=subprocess.PIPE)
+			process = subprocess.Popen(('echo {0}|iconv -f utf-8 -t iso-8859-1|festival --tts --language {1}'.format(self.commonMessages["done_messages"][self.melissa.language["key"]][message_index], self.melissa.language["tts_code"])), shell=True, stdout=subprocess.PIPE)
 			## Esperamos a que termine
 			process.wait()
 
@@ -83,7 +83,7 @@ class TTSService:
 				self.melissa.module_led.speak()
 
 			## Lanzamos el TTS con el mensaje pasado por parametro
-			process = subprocess.Popen((os.path.dirname(__file__) + '/TTS/speak.sh "{0}" {1}'.format(message, self.melissa.language["tts_code"])), shell=True, stdout=subprocess.PIPE)
+			process = subprocess.Popen(('echo {0}|iconv -f utf-8 -t iso-8859-1|festival --tts --language {1}'.format(message, self.melissa.language["tts_code"])), shell=True, stdout=subprocess.PIPE)
 			
 			## Esperamos a que termine
 			process.wait()
