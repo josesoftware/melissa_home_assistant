@@ -146,18 +146,16 @@ class IoTDevice(Thing):
 						self.properties[key]['value'] = str(value)
 
 
-		###################### Parametros Reservados
-		## Direccion IP
-		if 'ipaddress' in returnIntent['parameters']:
-			returnIntent['parameters']['ipaddress'] = str(self.address)
-
-		## Direccion Mac
-		if 'macaddress' in returnIntent['parameters']:
-			returnIntent['parameters']['macaddress'] = str(self.macAddress)
-
-		## Direccion Alias
-		if 'alias' in returnIntent['parameters']:
-			returnIntent['parameters']['alias'] = str(self.alias)
+		###################### Parametros de formato
+		## Formatea la URL
+		## IP
+		returnIntent['argument'] = returnIntent['argument'].replace('[##ipaddress##]', str(self.address))
+		## MAC
+		returnIntent['argument'] = returnIntent['argument'].replace('[##macaddress##]', str(self.macAddress))
+		## Alias
+		returnIntent['argument'] = returnIntent['argument'].replace('[##alias##]', str(self.alias))
+		## Categoria
+		returnIntent['argument'] = returnIntent['argument'].replace('[##category##]', str(self.category))
 
 		## Retorna el intent de ejecución
 		return returnIntent
